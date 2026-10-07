@@ -1,0 +1,80 @@
+/* ===== Lớp giao diện riêng cho bản App (không ảnh hưởng bản web) ===== */
+:root{
+  --lstv-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --lstv-bot: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --lstv-ad-h: 0px;          /* chiều cao banner, cập nhật từ JS */
+  --lstv-nav-h: 58px;
+}
+html.lstv-app body{
+  padding-top: var(--lstv-top) !important;
+  padding-bottom: calc(var(--lstv-nav-h) + var(--lstv-ad-h) + var(--lstv-bot) + 12px) !important;
+  -webkit-tap-highlight-color: transparent;
+}
+/* dải nền dưới thanh trạng thái để chữ không đè lên giờ/pin */
+html.lstv-app body::before{
+  content:""; position:fixed; left:0; right:0; top:0; height:var(--lstv-top);
+  background:var(--bg,#efe2c2); z-index:60;
+}
+html.lstv-app nav.tabs{ top: var(--lstv-top) !important; }
+/* WebView Android không hỗ trợ window.print() */
+html.lstv-app #printBtn{ display:none !important; }
+
+/* ---- Thanh điều hướng đáy ---- */
+.lstv-nav{
+  position:fixed; left:0; right:0; z-index:70;
+  bottom: calc(var(--lstv-ad-h) + var(--lstv-bot));
+  height: var(--lstv-nav-h);
+  display:flex; justify-content:space-around; align-items:stretch;
+  background: var(--paper,#f8efd9);
+  border-top:1px solid var(--line2,#b8955a);
+  box-shadow: 0 -4px 14px rgba(0,0,0,.08);
+  font-family: 'Noto Serif', Georgia, serif;
+}
+.lstv-nav a{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  text-decoration:none; color: var(--muted,#86704f); font-size:11.5px; line-height:1.15;
+}
+.lstv-nav a .h{ font-family:'Noto Serif SC', serif; font-size:19px; font-weight:900; line-height:1; }
+.lstv-nav a.on{ color: var(--red,#9c1f14); }
+.lstv-nav a.on .h{ text-shadow:0 0 0 currentColor; }
+/* che khoảng trống phía sau banner + thanh hệ thống */
+.lstv-adbg{
+  position:fixed; left:0; right:0; bottom:0; z-index:65;
+  height: calc(var(--lstv-ad-h) + var(--lstv-bot));
+  background: var(--paper2,#f3e6c6);
+}
+
+/* ---- Khóa luận giải bằng Rewarded ---- */
+section.lstv-locked{ position:relative; }
+section.lstv-locked > :not(h2):not(.lstv-gate){
+  filter: blur(7px) saturate(.6); pointer-events:none; user-select:none;
+  max-height: 340px; overflow:hidden;
+}
+.lstv-gate{
+  position:relative; z-index:5; margin:10px 0 14px; padding:16px 16px 14px;
+  border:1px solid var(--line2,#b8955a); border-radius:12px;
+  background: var(--paper,#f8efd9); text-align:center;
+  box-shadow: 0 6px 18px rgba(60,30,10,.12);
+}
+section:not(.lstv-locked) > .lstv-gate{ display:none; }
+.lstv-gate .seal{
+  display:inline-grid; place-items:center; width:44px; height:44px; border-radius:8px;
+  background: var(--seal,#b3261a); color: var(--sealtext,#fff6e8);
+  font-family:'Noto Serif SC',serif; font-weight:900; font-size:24px; margin-bottom:6px;
+}
+.lstv-gate p{ margin:4px 0 12px; color: var(--ink2,#4f3a26); font-size:14.5px; }
+.lstv-gate button{
+  appearance:none; border:0; border-radius:999px; padding:11px 20px; font:600 15px 'Noto Serif',serif;
+  background: var(--red,#9c1f14); color:#fff6e8; cursor:pointer;
+}
+.lstv-gate button[disabled]{ opacity:.6; }
+.lstv-gate small{ display:block; margin-top:8px; color: var(--muted,#86704f); font-size:12px; }
+
+.lstv-toast{
+  position:fixed; left:50%; transform:translateX(-50%); z-index:90;
+  bottom: calc(var(--lstv-nav-h) + var(--lstv-ad-h) + var(--lstv-bot) + 14px);
+  background: var(--ink,#2a1c10); color: var(--paper,#f8efd9);
+  padding:10px 16px; border-radius:10px; font:14px 'Noto Serif',serif; max-width:88vw; text-align:center;
+  opacity:0; transition:opacity .25s; pointer-events:none;
+}
+.lstv-toast.show{ opacity:.95; }

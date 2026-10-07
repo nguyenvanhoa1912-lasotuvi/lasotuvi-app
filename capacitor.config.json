@@ -1,0 +1,9 @@
+{
+  "appId": "io.github.nguyenvanhoa1912.lasotuvi",
+  "appName": "Lá Số Tử Vi",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  }
+}

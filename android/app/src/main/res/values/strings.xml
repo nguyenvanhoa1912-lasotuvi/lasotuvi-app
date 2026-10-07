@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lá Số Tử Vi</string>
+    <string name="title_activity_main">Lá Số Tử Vi</string>
+    <string name="package_name">io.github.nguyenvanhoa1912.lasotuvi</string>
+    <string name="custom_url_scheme">io.github.nguyenvanhoa1912.lasotuvi</string>
+</resources>
