@@ -5,8 +5,8 @@ name: Build Android
 
 on:
   push:
-    branches: [main]
-    tags: ['v*']          # đẩy tag v1.0.x -> tự build AAB phát hành
+    branches: [main, release]   # đẩy lên nhánh release -> tự build AAB phát hành
+    tags: ['v*']                # hoặc tạo tag v1.0.x
   workflow_dispatch:
     inputs:
       release:
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WEB_REPO: nguyenvanhoa1912-lasotuvi/lasotuvi
-      IS_RELEASE: ${{ (github.event_name == 'workflow_dispatch' && inputs.release) || startsWith(github.ref, 'refs/tags/v') }}
+      IS_RELEASE: ${{ (github.event_name == 'workflow_dispatch' && inputs.release) || startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/release' }}
       VERSION_CODE: ${{ github.run_number }}
       VERSION_NAME: 1.0.${{ github.run_number }}
     steps:
