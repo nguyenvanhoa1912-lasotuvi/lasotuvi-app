@@ -60,6 +60,7 @@ base64 -w0 upload.jks > upload.jks.b64      # macOS: base64 -i upload.jks -o upl
 
 ### Bước 5 – Build bản phát hành
 - **Actions → Build Android → Run workflow → tick “release”** → tải file `.aab` trong mục Artifacts.
+- Chưa nhập đủ 3 secrets `ADMOB_*` → bản AAB tự dùng **quảng cáo thử nghiệm** (đủ để chạy kiểm thử kín). Có AdMob rồi thì nhập secrets và build lại trước khi lên Production.
 - `versionCode` tự tăng theo số lần chạy workflow → mỗi lần upload không bị trùng.
 
 ### Bước 6 – Google Play Console

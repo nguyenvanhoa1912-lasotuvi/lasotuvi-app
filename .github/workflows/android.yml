@@ -54,10 +54,23 @@ jobs:
       - name: Cài thư viện
         run: npm ci
 
-      - name: Đóng gói web + đồng bộ Android
+      # Bản phát hành: dùng ID AdMob thật khi đủ cả 3 secrets; thiếu bất kỳ cái nào -> dùng QC thử nghiệm
+      # (cho phép bắt đầu kiểm thử kín trên Google Play trước khi có tài khoản AdMob)
+      - name: Chọn ID quảng cáo
+        if: env.IS_RELEASE == 'true'
         env:
-          ADMOB_BANNER_ID: ${{ env.IS_RELEASE == 'true' && secrets.ADMOB_BANNER_ID || '' }}
-          ADMOB_REWARDED_ID: ${{ env.IS_RELEASE == 'true' && secrets.ADMOB_REWARDED_ID || '' }}
+          S_APP: ${{ secrets.ADMOB_APP_ID }}
+          S_BANNER: ${{ secrets.ADMOB_BANNER_ID }}
+          S_REWARDED: ${{ secrets.ADMOB_REWARDED_ID }}
+        run: |
+          if [ -n "$S_APP" ] && [ -n "$S_BANNER" ] && [ -n "$S_REWARDED" ]; then
+            { echo "ADMOB_APP_ID=$S_APP"; echo "ADMOB_BANNER_ID=$S_BANNER"; echo "ADMOB_REWARDED_ID=$S_REWARDED"; } >> "$GITHUB_ENV"
+            echo "::notice::Bản phát hành dùng ID AdMob THẬT"
+          else
+            echo "::warning::Chưa đủ 3 secrets ADMOB_* -> bản này dùng QUẢNG CÁO THỬ NGHIỆM (không có doanh thu). Chỉ dùng cho kiểm thử kín."
+          fi
+
+      - name: Đóng gói web + đồng bộ Android
         run: npm run sync
 
       - name: Build APK thử nghiệm (debug)
@@ -78,12 +91,13 @@ jobs:
         if: env.IS_RELEASE == 'true'
         working-directory: android
         env:
-          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          if [ -z "$ADMOB_APP_ID" ]; then echo "::error::Thiếu secret ADMOB_APP_ID"; exit 1; fi
+          if [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
+            echo "::error::Thiếu secret ký app (ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD)"; exit 1
+          fi
           ./gradlew bundleRelease --no-daemon
 
       - name: Tải lên APK
