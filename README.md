@@ -64,7 +64,7 @@ base64 -w0 upload.jks > upload.jks.b64      # macOS: base64 -i upload.jks -o upl
 - `versionCode` tự tăng theo số lần chạy workflow → mỗi lần upload không bị trùng.
 
 ### Bước 6 – Google Play Console
-- **Chính sách quyền riêng tư (URL bắt buộc vì có quảng cáo)**: đưa `web/gioi-thieu.html` lên repo GitHub Pages, dùng link `…/gioi-thieu.html#privacy`. Sửa email hỗ trợ `EMAIL_HO_TRO@example.com` trước khi đăng.
+- **Chính sách quyền riêng tư (URL bắt buộc vì có quảng cáo)**: đã đăng tại https://nguyenvanhoa1912-lasotuvi.github.io/lasotuvi/privacy.html.
 - **App content**: Có quảng cáo = Có · Advertising ID = Có (dùng cho quảng cáo) · Data safety: dữ liệu ngày sinh xử lý trên máy, không thu thập; khai báo dữ liệu do AdMob SDK thu thập · Đối tượng: 18+ (tránh chính sách Gia đình).
 - **Kiểm thử kín (tài khoản cá nhân mới)**: theo tài liệu chính thức, cần **≥ 12 tester tham gia liên tục ≥ 14 ngày** trước khi xin quyền phát hành Production → mời người thân/đồng nghiệp ngay từ đầu.
 - Ảnh trang cửa hàng: `resources/play-icon-512.png`, `resources/play-feature-1024x500.png` + 2–8 ảnh chụp màn hình điện thoại từ APK.
