@@ -27,6 +27,11 @@ let cfg = readFileSync(join(APP, 'ad-config.js'), 'utf8')
 writeFileSync(join(OUT, 'app', 'ad-config.js'), cfg);
 copyFileSync(join(APP, 'app.js'), join(OUT, 'app', 'app.js'));
 copyFileSync(join(APP, 'app.css'), join(OUT, 'app', 'app.css'));
+copyFileSync(join(APP, 'export.js'), join(OUT, 'app', 'export.js'));
+// thư viện xuất ảnh/PDF (nạp lười khi người dùng bấm nút)
+mkdirSync(join(OUT, 'app', 'vendor'), { recursive: true });
+copyFileSync(join(ROOT, 'node_modules/html2canvas-pro/dist/html2canvas-pro.min.js'), join(OUT, 'app', 'vendor', 'html2canvas.min.js'));
+copyFileSync(join(ROOT, 'node_modules/jspdf/dist/jspdf.umd.min.js'), join(OUT, 'app', 'vendor', 'jspdf.umd.min.js'));
 
 const pages = readdirSync(WEB).filter(f => f.toLowerCase().endsWith('.html'));
 if (!pages.includes('index.html')) { console.error('✖ Thiếu web/index.html'); process.exit(1); }
@@ -36,7 +41,7 @@ for (const p of pages) {
   html = html.replace(/<meta\s+name="viewport"\s+content="([^"]*)"/i, (m, c) =>
     c.includes('viewport-fit') ? m : `<meta name="viewport" content="${c}, viewport-fit=cover"`);
   const head = '<link rel="stylesheet" href="app/app.css">\n';
-  const tail = '\n<script src="app/ad-config.js"></script>\n<script src="app/app.js"></script>\n';
+  const tail = '\n<script src="app/ad-config.js"></script>\n<script src="app/app.js"></script>\n<script src="app/export.js"></script>\n';
   html = html.replace(/<\/head>/i, head + '</head>');
   const i = html.toLowerCase().lastIndexOf('</body>');
   html = i >= 0 ? html.slice(0, i) + tail + html.slice(i) : html + tail;

@@ -78,3 +78,19 @@ section:not(.lstv-locked) > .lstv-gate{ display:none; }
   opacity:0; transition:opacity .25s; pointer-events:none;
 }
 .lstv-toast.show{ opacity:.95; }
+
+/* ---- Thanh Lưu ảnh / Xuất PDF ---- */
+.lstv-export{
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+  margin: 4px 0 12px;
+}
+.lstv-export button{
+  appearance:none; display:inline-flex; align-items:center; gap:8px;
+  padding:10px 16px; border-radius:999px; cursor:pointer;
+  font:600 14.5px 'Noto Serif', Georgia, serif;
+  border:1px solid var(--line2,#b8955a); background: var(--paper,#f8efd9); color: var(--ink,#2a1c10);
+  box-shadow: 0 2px 8px rgba(60,30,10,.08);
+}
+.lstv-export button:first-child{ background: var(--red,#9c1f14); color:#fff6e8; border-color: transparent; }
+.lstv-export button .i{ font-family:'Noto Serif SC',serif; font-weight:900; font-size:17px; line-height:1; }
+.lstv-export button[disabled]{ opacity:.55; }

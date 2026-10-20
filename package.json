@@ -12,7 +12,11 @@
     "@capacitor-community/admob": "^8.2.1",
     "@capacitor/android": "^8.5.3",
     "@capacitor/app": "^8.1.2",
-    "@capacitor/core": "^8.5.3"
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3",
+    "html2canvas-pro": "^1.6.7",
+    "jspdf": "^4.2.1"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
