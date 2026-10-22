@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lịch Vạn Niên</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:wght@600;700&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#efe2c2; --paper:#f8efd9; --paper2:#f3e6c6; --ink:#2a1c10; --ink2:#4f3a26; --muted:#86704f;
+  --line:#d8c297; --line2:#b8955a; --red:#9c1f14; --red2:#b8321f; --gold:#a8792a;
+  --seal:#b3261a; --sealtext:#fff6e8; --good:#2c6e3c; --bad:#7b7465; --goodbg:#e3ecd6; --badbg:#ece4d4;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#140c08; --paper:#21150e; --paper2:#2a1a11; --ink:#f0e2c4; --ink2:#d6c39f; --muted:#a48c66;
+    --line:#4a3421; --line2:#7a5a30; --red:#e0584a; --red2:#e8705f; --gold:#d4a94e;
+    --seal:#b3261a; --good:#7cc48a; --bad:#9a8f7c; --goodbg:#1f2b1c; --badbg:#2a221a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#140c08; --paper:#21150e; --paper2:#2a1a11; --ink:#f0e2c4; --ink2:#d6c39f; --muted:#a48c66;
+  --line:#4a3421; --line2:#7a5a30; --red:#e0584a; --red2:#e8705f; --gold:#d4a94e;
+  --seal:#b3261a; --good:#7cc48a; --bad:#9a8f7c; --goodbg:#1f2b1c; --badbg:#2a221a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'Noto Serif',Georgia,serif}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 40px}
+.han{font-family:'Noto Serif SC',serif}
+header.top{text-align:center;margin:6px 0 14px}
+header.top .t{font:900 40px/1.1 'Noto Serif SC',serif;color:var(--red);letter-spacing:.08em}
+header.top .s{font:700 15px 'Noto Serif',serif;letter-spacing:.32em;text-transform:uppercase;color:var(--ink2);margin-top:4px}
+header.top p{margin:6px auto 0;max-width:600px;color:var(--muted);font-style:italic;font-size:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;box-shadow:0 2px 10px rgba(60,30,10,.06)}
+h2{font:700 20px 'Playfair Display','Noto Serif',serif;margin:22px 0 8px;color:var(--ink);display:flex;align-items:center;gap:10px}
+h2 .han{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--seal);color:var(--sealtext);font-size:17px}
+button,input,select{font:inherit;color:inherit}
+.btn{appearance:none;border:1px solid var(--line2);background:var(--paper2);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px}
+.btn.red{background:var(--red);color:#fff6e8;border-color:transparent}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.nav input{border:1px solid var(--line2);background:var(--paper);border-radius:8px;padding:6px 8px}
+
+/* ---- Thẻ ngày ---- */
+.day{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin-top:12px}
+.day .sol,.day .lun{padding:14px 10px;text-align:center}
+.day .sol{border-right:1px solid var(--line)}
+.day .lab{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.day .big{font:700 64px/1 'Playfair Display','Noto Serif',serif;color:var(--ink);margin:6px 0}
+.day .lun .big{color:var(--red)}
+.day .sub{font-size:14px;color:var(--ink2)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0 4px}
+.bdg{font-size:13px;padding:3px 10px;border-radius:999px;border:1px solid var(--line2);background:var(--paper2)}
+.bdg.good{background:var(--goodbg);color:var(--good);border-color:transparent;font-weight:600}
+.bdg.bad{background:var(--badbg);color:var(--bad);border-color:transparent}
+.bdg.warn{background:var(--red);color:#fff6e8;border-color:transparent}
+.info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin-top:10px;border-top:1px dashed var(--line)}
+.info div{padding:8px 4px;border-bottom:1px dashed var(--line);font-size:14px}
+.info b{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.hours{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-top:10px}
+.hr{border:1px solid var(--line);border-radius:8px;padding:6px 2px;text-align:center;font-size:12px;background:var(--paper2);color:var(--muted)}
+.hr .c{font-weight:700;font-size:14px;color:var(--ink2)}
+.hr.g{background:var(--goodbg);border-color:transparent;color:var(--good)}
+.hr.g .c{color:var(--good)}
+.hr .n{font-size:10.5px}
+.note{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+
+/* ---- Lịch tháng ---- */
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mhead .ttl{font:700 18px 'Playfair Display','Noto Serif',serif;text-align:center}
+.mhead .ttl small{display:block;font:400 13px 'Noto Serif',serif;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin-top:10px}
+.wd{text-align:center;font-size:12px;font-weight:700;color:var(--muted);padding:4px 0}
+.wd.sun{color:var(--red)}
+.cell{position:relative;min-height:54px;border:1px solid var(--line);border-radius:8px;background:var(--paper2);padding:3px 4px;cursor:pointer;text-align:left}
+.cell.out{visibility:hidden}
+.cell .s{font-weight:700;font-size:16px;line-height:1.1}
+.cell.sun .s{color:var(--red)}
+.cell .l{font-size:11px;color:var(--muted)}
+.cell .l.m1{color:var(--red);font-weight:700}
+.cell .dot{position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%}
+.cell .dot.g{background:var(--good)}
+.cell .dot.b{background:var(--line2);opacity:.6}
+.cell .x{position:absolute;right:4px;bottom:2px;font-size:10px;color:var(--red)}
+.cell.today{outline:2px solid var(--gold)}
+.cell.sel{background:var(--red);border-color:var(--red)}
+.cell.sel .s,.cell.sel .l{color:#fff6e8!important}
+.cell.sel .dot.g{background:#fff6e8}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+/* ---- Ngày tốt & chuyển đổi ---- */
+.good-list{list-style:none;margin:8px 0 0;padding:0}
+.good-list li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.good-list .d{flex:0 0 58px;text-align:center;border-radius:8px;background:var(--goodbg);color:var(--good);padding:4px 0;font-weight:700}
+.good-list .d small{display:block;font-weight:400;font-size:11px}
+.good-list .w{font-size:13.5px}
+.good-list .w span{color:var(--muted)}
+.conv{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.conv input,.conv select{border:1px solid var(--line2);background:var(--paper);border-radius:8px;padding:6px 8px;width:72px}
+.conv label{font-size:13px;color:var(--ink2)}
+.conv-out{margin-top:8px;font-size:15px}
+footer{margin-top:24px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+footer li{margin:3px 0}
+@media (max-width:420px){
+  .day .big{font-size:52px}
+  .hours{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cell{min-height:48px;padding:2px 3px}
+  .cell .s{font-size:14.5px}
+  .cell .l{font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="t">萬年曆</div>
+    <div class="s">Lịch Vạn Niên</div>
+    <p>Âm lịch, can chi, tiết khí, ngày giờ hoàng đạo – hắc đạo, 12 trực, nhị thập bát tú và các ngày kỵ theo lịch truyền thống.</p>
+  </header>
+
+  <!-- ===== XEM NGÀY ===== -->
+  <h2><span class="han">日</span>Xem ngày</h2>
+  <div class="card">
+    <div class="nav">
+      <button class="btn" id="prevD" aria-label="Ngày trước">‹ Trước</button>
+      <input type="date" id="pick" aria-label="Chọn ngày dương lịch">
+      <button class="btn red" id="today">Hôm nay</button>
+      <button class="btn" id="nextD" aria-label="Ngày sau">Sau ›</button>
+    </div>
+    <div class="day">
+      <div class="sol"><div class="lab">Dương lịch</div><div class="big" id="sBig"></div><div class="sub" id="sSub"></div></div>
+      <div class="lun"><div class="lab">Âm lịch</div><div class="big" id="lBig"></div><div class="sub" id="lSub"></div></div>
+    </div>
+    <div class="badges" id="badges"></div>
+    <div class="info" id="info"></div>
+    <h3 style="font-size:15px;margin:14px 0 0">Giờ hoàng đạo – hắc đạo</h3>
+    <div class="hours" id="hours"></div>
+    <p class="note">Ô xanh là giờ hoàng đạo (giờ tốt), kèm tên thần cai quản. Giờ tính theo giờ địa phương, mỗi giờ âm lịch dài 2 tiếng.</p>
+  </div>
+
+  <!-- ===== LỊCH THÁNG ===== -->
+  <h2><span class="han">月</span>Lịch tháng</h2>
+  <div class="card">
+    <div class="mhead">
+      <button class="btn" id="prevM" aria-label="Tháng trước">‹</button>
+      <div class="ttl" id="mTitle"></div>
+      <button class="btn" id="nextM" aria-label="Tháng sau">›</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="legend"><span><i style="background:var(--good)"></i>Ngày hoàng đạo</span><span><i style="background:var(--line2);opacity:.6"></i>Ngày hắc đạo</span><span><b style="color:var(--red)">✕</b> Ngày kỵ (Tam nương, Nguyệt kỵ, Dương công)</span></div>
+  </div>
+
+  <!-- ===== NGÀY TỐT ===== -->
+  <h2><span class="han">吉</span>Ngày tốt trong tháng</h2>
+  <div class="card">
+    <p class="note" style="margin-top:0">Lọc các ngày <b>hoàng đạo</b>, <b>không phạm ngày kỵ</b>, trực không xấu, ưu tiên ngày có trực tốt và sao tốt. Bấm vào một ngày để xem chi tiết.</p>
+    <ul class="good-list" id="goodList"></ul>
+  </div>
+
+  <!-- ===== ĐỔI LỊCH ===== -->
+  <h2><span class="han">換</span>Đổi ngày âm sang dương</h2>
+  <div class="card">
+    <div class="conv">
+      <label>Ngày <input type="number" id="cD" min="1" max="30" value="1"></label>
+      <label>Tháng <input type="number" id="cM" min="1" max="12" value="1"></label>
+      <label>Năm <input type="number" id="cY" min="1900" max="2100" style="width:84px"></label>
+      <label><input type="checkbox" id="cL" style="width:auto"> Tháng nhuận</label>
+      <button class="btn red" id="cGo">Đổi</button>
+    </div>
+    <div class="conv-out" id="cOut"></div>
+  </div>
+
+  <footer>
+    <b>Cơ sở tính toán:</b>
+    <ul>
+      <li>Âm lịch: thuật toán thiên văn của Hồ Ngọc Đức (múi giờ UTC+7; trước năm 1968 dùng UTC+8).</li>
+      <li>Tiết khí theo kinh độ Mặt Trời (mỗi tiết 15°); 12 trực tính theo tháng tiết lệnh (Trực Kiến trùng Chi tháng).</li>
+      <li>Ngày hoàng đạo – hắc đạo theo vòng 12 thần (Thanh Long, Minh Đường, Kim Quỹ, Kim Đường, Ngọc Đường, Tư Mệnh là hoàng đạo) khởi theo tháng âm lịch; giờ hoàng đạo khởi theo Chi ngày.</li>
+      <li>Ngày kỵ dân gian: Tam nương (3, 7, 13, 18, 22, 27), Nguyệt kỵ (5, 14, 23), Dương công kỵ nhật (13 ngày trong năm).</li>
+      <li>Hướng Hỷ thần theo Can ngày: Giáp, Kỷ – Đông Bắc; Ất, Canh – Tây Bắc; Bính, Tân – Tây Nam; Đinh, Nhâm – Chính Nam; Mậu, Quý – Đông Nam.</li>
+    </ul>
+    Phân loại trực và sao tốt – xấu theo cách xếp phổ biến trong lịch dân gian; các trường phái có thể khác nhau. Nội dung chỉ mang tính tham khảo.
+  </footer>
+</div>
+
+<script src="lich-engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var V = window.LichVN, $ = function (id) { return document.getElementById(id); };
+  var now = new Date();
+  var sel = { d: now.getDate(), m: now.getMonth() + 1, y: now.getFullYear() };
+  var view = { m: sel.m, y: sel.y };
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function iso(o) { return o.y + '-' + pad(o.m) + '-' + pad(o.d); }
+  function shift(o, k) { var t = V.jdToDate(V.jdFromDate(o.d, o.m, o.y) + k); return { d: t[0], m: t[1], y: t[2] }; }
+  function daysIn(m, y) { return new Date(y, m, 0).getDate(); }
+  function lunText(L) { return 'Tháng ' + L.month + (L.leap ? ' nhuận' : '') + (L.monthLen === 30 ? ' (đủ)' : ' (thiếu)'); }
+
+  function renderDay() {
+    var I = V.dayInfo(sel.d, sel.m, sel.y), L = I.lunar;
+    $('pick').value = iso(sel);
+    $('sBig').textContent = sel.d;
+    $('sSub').textContent = I.solar.thu + ', ' + pad(sel.d) + '/' + pad(sel.m) + '/' + sel.y;
+    $('lBig').textContent = L.day;
+    $('lSub').textContent = lunText(L) + ' · năm ' + I.canChi.year;
+    var b = [];
+    b.push('<span class="bdg ' + (I.hoangDao.good ? 'good' : 'bad') + '">' + (I.hoangDao.good ? 'Hoàng đạo' : 'Hắc đạo') + ' · ' + I.hoangDao.name + '</span>');
+    b.push('<span class="bdg ' + (I.trucLoai === 'tốt' ? 'good' : I.trucLoai === 'xấu' ? 'bad' : '') + '">Trực ' + I.truc + '</span>');
+    b.push('<span class="bdg ' + (I.tu28.good ? 'good' : 'bad') + '">Sao ' + I.tu28.name + '</span>');
+    if (I.giaoTiet) b.push('<span class="bdg">Giao tiết ' + I.tietKhi + '</span>');
+    I.ky.forEach(function (k) { b.push('<span class="bdg warn">' + k + '</span>'); });
+    $('badges').innerHTML = b.join('');
+    var rows = [
+      ['Ngày', I.canChi.day + ' <span class="han">' + I.canChi.dayHan + '</span>'],
+      ['Tháng', I.canChi.month],
+      ['Năm', I.canChi.year],
+      ['Nạp âm ngày', I.napAm],
+      ['Tiết khí', I.tietKhi],
+      ['Trực', I.truc + ' <span style="color:var(--muted)">(' + I.trucLoai + ')</span>'],
+      ['Nhị thập bát tú', I.tu28.full + ' <span style="color:var(--muted)">(' + (I.tu28.good ? 'cát tú' : 'hung tú') + ')</span>'],
+      ['Hướng Hỷ thần', I.hyThan],
+      ['Tuổi xung ngày', 'Tuổi ' + I.xung + ' (lục xung)'],
+      ['Hợp ngày', 'Tam hợp: ' + I.tamHop.join(', ') + ' · Lục hợp: ' + I.lucHop]
+    ];
+    $('info').innerHTML = rows.map(function (r) { return '<div><b>' + r[0] + '</b>' + r[1] + '</div>'; }).join('');
+    $('hours').innerHTML = I.hours.map(function (h) {
+      return '<div class="hr' + (h.good ? ' g' : '') + '"><div class="c">' + h.chi + '</div>' + h.range + '<div class="n">' + h.than + '</div></div>';
+    }).join('');
+  }
+
+  function renderMonth() {
+    var first = new Date(view.y, view.m - 1, 1).getDay();      // 0 = CN
+    var lead = (first + 6) % 7;                                 // tuần bắt đầu Thứ hai
+    var n = daysIn(view.m, view.y), html = [];
+    ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].forEach(function (w, i) { html.push('<div class="wd' + (i === 6 ? ' sun' : '') + '">' + w + '</div>'); });
+    for (var i = 0; i < lead; i++) html.push('<div class="cell out"></div>');
+    var isNow = function (d) { return d === now.getDate() && view.m === now.getMonth() + 1 && view.y === now.getFullYear(); };
+    var good = [];
+    for (var d = 1; d <= n; d++) {
+      var I = V.dayInfo(d, view.m, view.y), L = I.lunar, wd = (lead + d - 1) % 7;
+      var lab = L.day === 1 ? L.day + '/' + L.month + (L.leap ? 'N' : '') : L.day;
+      var cls = 'cell' + (wd === 6 ? ' sun' : '') + (isNow(d) ? ' today' : '') + (d === sel.d && view.m === sel.m && view.y === sel.y ? ' sel' : '');
+      html.push('<button class="' + cls + '" data-d="' + d + '" aria-label="Ngày ' + d + ', âm lịch ' + L.day + '/' + L.month + '">' +
+        '<div class="s">' + d + '</div><div class="l' + (L.day === 1 ? ' m1' : '') + '">' + lab + '</div>' +
+        '<span class="dot ' + (I.hoangDao.good ? 'g' : 'b') + '"></span>' + (I.ky.length ? '<span class="x">✕</span>' : '') + '</button>');
+      if (I.hoangDao.good && !I.ky.length && I.trucLoai !== 'xấu') good.push(I);
+    }
+    $('grid').innerHTML = html.join('');
+    var L1 = V.solar2lunar(1, view.m, view.y), Ln = V.solar2lunar(n, view.m, view.y);
+    $('mTitle').innerHTML = 'Tháng ' + view.m + ' / ' + view.y + '<small>Âm lịch: ' + L1.day + '/' + L1.month + ' – ' + Ln.day + '/' + Ln.month + ' · ' + V.dayInfo(15, view.m, view.y).canChi.year + '</small>';
+    good.sort(function (a, b) { return b.score - a.score || a.solar.d - b.solar.d; });
+    $('goodList').innerHTML = good.length ? good.map(function (I) {
+      var why = [I.hoangDao.name + ' hoàng đạo', 'trực ' + I.truc + (I.trucLoai === 'tốt' ? ' (tốt)' : ''), 'sao ' + I.tu28.name + (I.tu28.good ? ' (cát)' : ' (hung)')];
+      return '<li data-d="' + I.solar.d + '"><div class="d">' + pad(I.solar.d) + '/' + pad(I.solar.m) + '<small>' + I.lunar.day + '/' + I.lunar.month + ' ÂL</small></div>' +
+        '<div class="w"><b>' + I.solar.thu + ' · ' + I.canChi.day + '</b><br><span>' + why.join(' · ') + '</span></div></li>';
+    }).join('') : '<li>Tháng này không có ngày đạt đủ tiêu chí.</li>';
+  }
+
+  function go(o) { sel = o; view = { m: o.m, y: o.y }; renderDay(); renderMonth(); }
+  $('prevD').onclick = function () { go(shift(sel, -1)); };
+  $('nextD').onclick = function () { go(shift(sel, 1)); };
+  $('today').onclick = function () { now = new Date(); go({ d: now.getDate(), m: now.getMonth() + 1, y: now.getFullYear() }); };
+  $('pick').onchange = function () { var p = this.value.split('-'); if (p.length === 3) go({ y: +p[0], m: +p[1], d: +p[2] }); };
+  $('prevM').onclick = function () { view.m--; if (view.m < 1) { view.m = 12; view.y--; } renderMonth(); };
+  $('nextM').onclick = function () { view.m++; if (view.m > 12) { view.m = 1; view.y++; } renderMonth(); };
+  function pickFrom(e) {
+    var t = e.target.closest('[data-d]'); if (!t) return;
+    sel = { d: +t.getAttribute('data-d'), m: view.m, y: view.y }; renderDay(); renderMonth();
+    document.querySelector('.day').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  $('grid').onclick = pickFrom; $('goodList').onclick = pickFrom;
+  $('cY').value = now.getFullYear();
+  $('cGo').onclick = function () {
+    var d = +$('cD').value, m = +$('cM').value, y = +$('cY').value, leap = $('cL').checked ? 1 : 0;
+    if (!(d >= 1 && d <= 30 && m >= 1 && m <= 12 && y >= 1900 && y <= 2100)) { $('cOut').textContent = 'Vui lòng nhập ngày 1–30, tháng 1–12, năm 1900–2100.'; return; }
+    var r = V.lunar2solar(d, m, y, leap);
+    if (!r) { $('cOut').textContent = 'Năm ' + y + ' không có tháng ' + m + ' nhuận.'; return; }
+    var back = V.solar2lunar(r[0], r[1], r[2]);
+    if (back.day !== d) { $('cOut').textContent = 'Tháng ' + m + (leap ? ' nhuận' : '') + ' năm ' + y + ' chỉ có ' + back.monthLen + ' ngày (tháng thiếu).'; return; }
+    var I = V.dayInfo(r[0], r[1], r[2]);
+    $('cOut').innerHTML = 'Ngày ' + d + '/' + m + (leap ? ' nhuận' : '') + ' âm lịch năm ' + I.canChi.year + ' là <b>' + I.solar.thu + ', ' + pad(r[0]) + '/' + pad(r[1]) + '/' + r[2] + '</b> (ngày ' + I.canChi.day + '). <a href="#" id="cView">Xem ngày này</a>';
+    $('cView').onclick = function (e) { e.preventDefault(); go({ d: r[0], m: r[1], y: r[2] }); document.querySelector('.day').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+  };
+  go(sel);
+  try { var th = localStorage.getItem('tv-theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch (e) { }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giải Mộng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:wght@600;700&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#efe2c2; --paper:#f8efd9; --paper2:#f3e6c6; --ink:#2a1c10; --ink2:#4f3a26; --muted:#86704f;
+  --line:#d8c297; --line2:#b8955a; --red:#9c1f14; --gold:#a8792a; --seal:#b3261a; --sealtext:#fff6e8;
+  --blue:#2f5d7c; --bluebg:#e2e9ec;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#140c08; --paper:#21150e; --paper2:#2a1a11; --ink:#f0e2c4; --ink2:#d6c39f; --muted:#a48c66;
+    --line:#4a3421; --line2:#7a5a30; --red:#e0584a; --gold:#d4a94e; --blue:#8fb8d4; --bluebg:#1b2630;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#140c08; --paper:#21150e; --paper2:#2a1a11; --ink:#f0e2c4; --ink2:#d6c39f; --muted:#a48c66;
+  --line:#4a3421; --line2:#7a5a30; --red:#e0584a; --gold:#d4a94e; --blue:#8fb8d4; --bluebg:#1b2630;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'Noto Serif',Georgia,serif}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 40px}
+header.top{text-align:center;margin:6px 0 14px}
+header.top .t{font:900 40px/1.1 'Noto Serif SC',serif;color:var(--red);letter-spacing:.08em}
+header.top .s{font:700 15px 'Noto Serif',serif;letter-spacing:.32em;text-transform:uppercase;color:var(--ink2);margin-top:4px}
+header.top p{margin:6px auto 0;max-width:600px;color:var(--muted);font-style:italic;font-size:14px}
+.search{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 6px}
+.search input{width:100%;font:inherit;color:inherit;padding:11px 14px;border-radius:999px;border:1px solid var(--line2);background:var(--paper)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}
+.chips button{flex:0 0 auto;font:inherit;font-size:13.5px;color:var(--ink2);border:1px solid var(--line2);background:var(--paper2);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chips button.on{background:var(--red);color:#fff6e8;border-color:transparent}
+.count{font-size:12.5px;color:var(--muted);margin:6px 2px}
+.item{background:var(--paper);border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+.item summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px}
+.item summary::-webkit-details-marker{display:none}
+.item .ic{flex:0 0 40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--seal);color:var(--sealtext);font:900 20px 'Noto Serif SC',serif}
+.item .nm{font-weight:700;font-size:16.5px}
+.item .gp{font-size:12px;color:var(--muted)}
+.item .ar{margin-left:auto;color:var(--muted);transition:transform .2s}
+.item[open] .ar{transform:rotate(90deg)}
+.item .body{padding:0 14px 14px 66px}
+.item .row{margin:6px 0;font-size:14.5px}
+.item .row b{display:inline-block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;padding:1px 8px;border-radius:999px;margin-right:4px}
+.item .row.dg b{background:var(--paper2);color:var(--red);border:1px solid var(--line2)}
+.item .row.tl b{background:var(--bluebg);color:var(--blue)}
+.empty{text-align:center;color:var(--muted);padding:24px 0}
+.disc{background:var(--paper2);border:1px dashed var(--line2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink2);margin-top:18px}
+@media (max-width:420px){ .item .body{padding-left:14px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="t">解夢</div>
+    <div class="s">Giải Mộng</div>
+    <p>Tra cứu ý nghĩa giấc mơ theo quan niệm dân gian Việt Nam và góc nhìn tâm lý học hiện đại.</p>
+  </header>
+
+  <div class="search">
+    <input id="q" type="search" placeholder="Bạn mơ thấy gì? Ví dụ: rắn, rụng răng, cháy nhà…" aria-label="Tìm giấc mơ">
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="count" id="count"></div>
+  <div id="list"></div>
+
+  <div class="disc">
+    <b>Lưu ý:</b> Phần <b>Dân gian</b> tổng hợp các cách hiểu được lưu truyền phổ biến (như tinh thần sách <i>Chu Công giải mộng</i>). Mỗi vùng, mỗi người có thể hiểu khác nhau, nên đây chỉ là tham khảo và giải trí. Phần <b>Tâm lý</b> nêu cách lý giải thường gặp: giấc mơ phản ánh cảm xúc, lo lắng và trải nghiệm hằng ngày. Nếu thường xuyên gặp ác mộng làm ảnh hưởng giấc ngủ, bạn nên trao đổi với bác sĩ hoặc chuyên gia tâm lý.
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // [tên, nhóm, chữ Hán biểu tượng, từ khóa phụ, dân gian, tâm lý]
+  var D = [
+    // ---- Con vật ----
+    ['Rắn', 'Con vật', '蛇', 'ran ran can con ran', 'Thường được xem là điềm báo về tình duyên, hôn nhân hoặc tin vui về con cái. Bị rắn cắn nhiều nơi lại hiểu là sắp gặp may mắn, tài lộc.', 'Có thể phản ánh nỗi lo về một mối đe dọa, sự thay đổi lớn hoặc người khiến bạn e ngại.'],
+    ['Cá', 'Con vật', '魚', 'ca bat ca ca chep', 'Biểu tượng của sự dư dả, sung túc (“có cá” – “có dư”). Bắt được cá to thường được coi là điềm có lộc; cá chết là điềm nên giữ gìn tiền bạc.', 'Liên quan đến cơ hội, cảm xúc hoặc những điều bạn đang muốn “nắm bắt”.'],
+    ['Chó', 'Con vật', '犬', 'cho cho can', 'Chó hiền là điềm có bạn bè, người giúp đỡ trung thành. Bị chó cắn hoặc đuổi thường được hiểu là nên đề phòng mâu thuẫn, tiểu nhân.', 'Phản ánh các mối quan hệ thân thiết, lòng tin hoặc sự phản bội.'],
+    ['Mèo', 'Con vật', '貓', 'meo', 'Thường gắn với sự lén lút; dân gian khuyên nên cẩn thận lời nói, đề phòng bị lừa dối.', 'Có thể thể hiện nhu cầu độc lập hoặc cảm giác nghi ngờ ai đó.'],
+    ['Chuột', 'Con vật', '鼠', 'chuot', 'Thường được hiểu là điềm hao hụt tiền bạc, mất mát nhỏ; nên quản lý chi tiêu cẩn thận.', 'Gợi những lo lắng vụn vặt, chuyện nhỏ đang “gặm nhấm” tâm trí.'],
+    ['Hổ', 'Con vật', '虎', 'ho cop', 'Biểu tượng quyền uy: có thể là điềm gặp quý nhân, thăng tiến; bị hổ đuổi là dấu hiệu áp lực từ người có thế lực.', 'Thể hiện sức mạnh nội tâm hoặc áp lực từ cấp trên, người có quyền.'],
+    ['Rồng', 'Con vật', '龍', 'rong', 'Được coi là điềm đại cát: thăng tiến, công danh, may mắn lớn.', 'Thể hiện khát vọng, tham vọng và mong muốn được công nhận.'],
+    ['Trâu, bò', 'Con vật', '牛', 'trau bo', 'Tượng trưng cho sự chăm chỉ, làm ăn bền vững, thành quả đến từ lao động.', 'Phản ánh trách nhiệm, công việc nặng nhọc hoặc sự kiên nhẫn.'],
+    ['Lợn (heo)', 'Con vật', '豬', 'lon heo', 'Biểu tượng của no đủ, sung túc, tài lộc trong gia đình.', 'Liên quan đến nhu cầu vật chất, sự thoải mái.'],
+    ['Gà', 'Con vật', '雞', 'ga ga gay', 'Thường gắn với tin tức, việc nhà; gà gáy là điềm sắp có tin.', 'Nhắc nhở về giờ giấc, trách nhiệm hằng ngày.'],
+    ['Chim', 'Con vật', '鳥', 'chim chim bay', 'Chim bay đến là điềm có tin vui; chim hót là điềm hạnh phúc.', 'Biểu tượng của tự do, mong muốn thoát khỏi ràng buộc.'],
+    ['Ngựa', 'Con vật', '馬', 'ngua', 'Điềm công việc tiến triển nhanh, có chuyến đi xa thuận lợi.', 'Thể hiện năng lượng, động lực tiến về phía trước.'],
+    ['Voi', 'Con vật', '象', 'voi', 'Điềm may mắn, vững chắc và sung túc.', 'Biểu tượng của trí nhớ, sức mạnh và sự ổn định.'],
+    ['Rùa', 'Con vật', '龜', 'rua', 'Tượng trưng cho trường thọ, bền vững, bình an.', 'Nhắc bạn chậm lại, kiên nhẫn hoặc thu mình để bảo vệ bản thân.'],
+    ['Khỉ', 'Con vật', '猴', 'khi', 'Dân gian khuyên đề phòng người tinh ranh, lời hứa không thật.', 'Phản ánh sự bồn chồn, tâm trí khó tập trung.'],
+    ['Bướm', 'Con vật', '蝶', 'buom', 'Điềm có tin vui, chuyện tình cảm lãng mạn.', 'Biểu tượng của sự thay đổi, trưởng thành.'],
+    ['Ong', 'Con vật', '蜂', 'ong ong dot', 'Đàn ong là điềm chăm chỉ được đền đáp; bị ong đốt là nên đề phòng lời ra tiếng vào.', 'Liên quan đến công việc bận rộn, tập thể.'],
+    ['Nhện', 'Con vật', '蛛', 'nhen nhen sa', 'Dân gian có câu “nhện sa” báo sắp có khách hoặc tin tức.', 'Có thể thể hiện cảm giác bị mắc kẹt trong một tình huống.'],
+    // ---- Thiên nhiên ----
+    ['Nước', 'Thiên nhiên', '水', 'nuoc nuoc trong nuoc duc lu lut', 'Nước trong, êm là điềm thuận lợi, may mắn; nước đục hoặc lũ lụt là điềm trắc trở, cần thận trọng.', 'Nước thường tượng trưng cho cảm xúc: êm đềm hay cuồn cuộn tùy tâm trạng của bạn.'],
+    ['Lửa, cháy nhà', 'Thiên nhiên', '火', 'lua chay chay nha', 'Nhiều người tin mơ thấy cháy nhà, lửa cháy to là điềm phát đạt, làm ăn thịnh vượng.', 'Biểu hiện của đam mê, giận dữ hoặc một điều gì đó cần “thiêu rụi” để bắt đầu lại.'],
+    ['Mưa', 'Thiên nhiên', '雨', 'mua', 'Mưa nhẹ là điềm gột rửa, khởi đầu mới; mưa bão là điềm sóng gió.', 'Thường gắn với nỗi buồn hoặc nhu cầu được làm mới.'],
+    ['Mặt trời', 'Thiên nhiên', '日', 'mat troi nang', 'Điềm thành công, danh vọng, mọi việc sáng sủa.', 'Thể hiện sự lạc quan, năng lượng tích cực.'],
+    ['Mặt trăng', 'Thiên nhiên', '月', 'mat trang trang', 'Trăng tròn sáng là điềm viên mãn, tình cảm êm ấm.', 'Liên quan đến cảm xúc, trực giác, sự tĩnh lặng.'],
+    ['Núi', 'Thiên nhiên', '山', 'nui leo nui', 'Leo lên đỉnh núi là điềm đạt được mục tiêu; núi lở là điềm trở ngại.', 'Tượng trưng cho thử thách lớn bạn đang đối mặt.'],
+    ['Biển', 'Thiên nhiên', '海', 'bien song', 'Biển lặng là điềm cơ hội rộng mở; sóng dữ là điềm biến động.', 'Phản ánh chiều sâu cảm xúc, những điều chưa biết.'],
+    ['Hoa', 'Thiên nhiên', '花', 'hoa hoa no hoa heo', 'Hoa nở là điềm vui, tình duyên tốt đẹp; hoa héo là điềm buồn phiền.', 'Thể hiện vẻ đẹp, tình cảm, sự trưởng thành.'],
+    ['Cây', 'Thiên nhiên', '樹', 'cay cay xanh cay do', 'Cây xanh tốt là điềm sinh sôi, gia đạo hưng thịnh; cây đổ là điềm mất chỗ dựa.', 'Biểu tượng của sự phát triển bản thân và gốc rễ gia đình.'],
+    ['Động đất', 'Thiên nhiên', '震', 'dong dat', 'Điềm báo biến động lớn trong cuộc sống.', 'Cảm giác nền tảng cuộc sống đang lung lay, bất ổn.'],
+    ['Cầu vồng', 'Thiên nhiên', '虹', 'cau vong', 'Điềm hy vọng, may mắn sau giai đoạn khó khăn.', 'Thể hiện sự lạc quan, hòa giải.'],
+    ['Bão, gió lớn', 'Thiên nhiên', '風', 'bao gio loc', 'Điềm sóng gió, xung đột cần bình tĩnh vượt qua.', 'Phản ánh căng thẳng, mâu thuẫn đang tích tụ.'],
+    // ---- Con người ----
+    ['Người đã khuất', 'Con người', '祖', 'nguoi chet nguoi da mat ong ba ve', 'Thường được hiểu là lời nhắc nhớ tổ tiên, ông bà; nhiều người tin đó là điềm báo bình an.', 'Biểu hiện của nỗi nhớ, sự hoài niệm hoặc những điều chưa kịp nói.'],
+    ['Người thân qua đời (trong mơ)', 'Con người', '亡', 'nguoi than chet', 'Dân gian thường hiểu theo hướng ngược lại: người được mơ thấy sẽ khỏe mạnh, sống thọ.', 'Phản ánh nỗi lo mất mát, sự quan tâm dành cho người đó.'],
+    ['Bản thân chết', 'Con người', '終', 'minh chet ban than chet', 'Điềm thoát khỏi vận xui, bắt đầu một giai đoạn mới.', 'Tượng trưng cho sự kết thúc một giai đoạn và thay đổi bản thân.'],
+    ['Đám cưới', 'Con người', '婚', 'dam cuoi cuoi hoi ao cuoi', 'Dân gian thường cho là điềm “ngược”, nên thận trọng việc lớn; mơ mình cưới có thể báo tin vui tình cảm.', 'Thể hiện kỳ vọng hoặc lo lắng về sự cam kết, gắn bó.'],
+    ['Đám tang, quan tài', 'Con người', '棺', 'dam tang quan tai', 'Nhiều người tin “quan tài” là “thăng quan, phát tài” – điềm tốt cho công danh, tiền bạc.', 'Tượng trưng cho việc khép lại một điều cũ.'],
+    ['Em bé', 'Con người', '嬰', 'em be tre so sinh', 'Điềm niềm vui mới, khởi đầu tốt; có nơi hiểu là sắp có tin vui về con cái.', 'Biểu tượng của dự định mới, sự ngây thơ hoặc nhu cầu được chăm sóc.'],
+    ['Mang thai', 'Con người', '孕', 'mang thai co bau', 'Điềm phúc lộc, có thêm thành viên hoặc thành quả mới.', 'Thể hiện một ý tưởng, kế hoạch đang “thai nghén”.'],
+    ['Người yêu cũ', 'Con người', '舊', 'nguoi yeu cu', 'Dân gian ít đề cập; thường được hiểu là chuyện cũ chưa dứt.', 'Phản ánh cảm xúc chưa trọn vẹn hoặc bài học từ quá khứ.'],
+    ['Ma, quỷ', 'Con người', '鬼', 'ma quy', 'Dân gian khuyên giữ tâm an, cẩn trọng trong lời nói việc làm.', 'Thể hiện nỗi sợ, lo âu hoặc điều bạn đang né tránh.'],
+    ['Cãi nhau, đánh nhau', 'Con người', '爭', 'cai nhau danh nhau', 'Dân gian hiểu theo hướng ngược: có thể là điềm hòa giải.', 'Căng thẳng, mâu thuẫn chưa được giải tỏa.'],
+    // ---- Cơ thể ----
+    ['Rụng răng', 'Cơ thể', '齒', 'rung rang gay rang', 'Thường được xem là điềm cần quan tâm sức khỏe người thân trong gia đình.', 'Giấc mơ rất phổ biến, liên quan đến lo lắng về ngoại hình, tuổi tác hoặc cảm giác mất kiểm soát.'],
+    ['Rụng tóc, cắt tóc', 'Cơ thể', '髮', 'rung toc cat toc', 'Rụng tóc là điềm hao tổn; cắt tóc là điềm rũ bỏ phiền muộn.', 'Thể hiện mong muốn thay đổi hình ảnh bản thân hoặc lo lắng về sức khỏe.'],
+    ['Máu', 'Cơ thể', '血', 'mau chay mau', 'Nhiều người tin mơ thấy máu là điềm có tài lộc.', 'Có thể phản ánh mệt mỏi, kiệt sức hoặc tổn thương cảm xúc.'],
+    ['Khóc', 'Cơ thể', '泣', 'khoc', 'Dân gian hiểu theo hướng ngược: sắp có chuyện vui.', 'Cảm xúc dồn nén cần được giải tỏa.'],
+    ['Bóng đè', 'Cơ thể', '壓', 'bong de khong cu dong duoc', 'Dân gian gắn với chuyện tâm linh, khuyên giữ tâm an.', 'Khoa học gọi là “tê liệt khi ngủ”: não đã tỉnh nhưng cơ thể chưa cử động được, thường do thiếu ngủ, căng thẳng, nằm ngửa. Hiện tượng này không nguy hiểm.'],
+    // ---- Đồ vật & tiền bạc ----
+    ['Tiền', 'Đồ vật', '錢', 'tien nhat tien mat tien', 'Nhặt được tiền là điềm may; mất tiền là điềm nên cẩn thận chi tiêu.', 'Phản ánh mối quan tâm về tài chính, giá trị bản thân.'],
+    ['Vàng, trang sức', 'Đồ vật', '金', 'vang trang suc nhan day chuyen', 'Được tặng vàng là điềm có quý nhân; đánh mất trang sức là điềm hao tài.', 'Thể hiện điều bạn trân quý hoặc sợ đánh mất.'],
+    ['Nhà mới', 'Đồ vật', '宅', 'nha moi chuyen nha', 'Điềm thay đổi tốt, cuộc sống ổn định hơn.', 'Biểu tượng của bản thân; nhà mới là giai đoạn mới.'],
+    ['Nhà sập', 'Đồ vật', '傾', 'nha sap', 'Điềm cần chú ý gia đạo, sức khỏe người lớn tuổi.', 'Lo lắng về nền tảng cuộc sống, gia đình.'],
+    ['Xe, tai nạn xe', 'Đồ vật', '車', 'xe tai nan xe o to xe may', 'Đi xe thuận lợi là điềm công việc suôn sẻ; tai nạn là điềm nên thận trọng khi đi lại.', 'Phản ánh cảm giác kiểm soát (hoặc mất kiểm soát) hướng đi cuộc đời.'],
+    ['Máy bay', 'Đồ vật', '機', 'may bay', 'Điềm có chuyến đi xa hoặc thăng tiến.', 'Khát vọng vượt lên, thay đổi môi trường.'],
+    ['Gương vỡ', 'Đồ vật', '鏡', 'guong guong vo', 'Thường bị coi là điềm không may, rạn nứt tình cảm.', 'Liên quan đến cách bạn nhìn nhận bản thân.'],
+    ['Dép, giày', 'Đồ vật', '履', 'dep giay mat dep', 'Mất dép, giày thường được hiểu là điềm lo lắng chuyện tình cảm, vợ chồng.', 'Thể hiện cảm giác chưa vững vàng trên con đường đang đi.'],
+    ['Chìa khóa', 'Đồ vật', '鑰', 'chia khoa', 'Điềm tìm ra lối thoát, có cơ hội mới.', 'Biểu tượng của giải pháp cho vấn đề đang vướng mắc.'],
+    ['Ăn uống, cỗ bàn', 'Đồ vật', '食', 'an uong an co tiec', 'Điềm no đủ, sum vầy.', 'Nhu cầu được nuôi dưỡng về thể chất hoặc tinh thần.'],
+    // ---- Hành động ----
+    ['Bay', 'Hành động', '飛', 'bay bay len troi', 'Điềm thăng tiến, vượt qua trở ngại.', 'Cảm giác tự do, thoát khỏi áp lực.'],
+    ['Rơi từ trên cao', 'Hành động', '墜', 'roi nga te', 'Điềm nên thận trọng, tránh mạo hiểm.', 'Giấc mơ rất phổ biến, liên quan đến bất an, sợ thất bại; đôi khi chỉ là phản xạ cơ thể lúc chìm vào giấc ngủ.'],
+    ['Bị rượt đuổi', 'Hành động', '追', 'bi duoi ruot duoi', 'Điềm có người gây khó dễ, cần đề phòng.', 'Thường do né tránh một vấn đề hoặc cảm xúc chưa đối diện.'],
+    ['Đi thi, trễ thi', 'Hành động', '試', 'thi cu di thi tre gio', 'Dân gian ít đề cập.', 'Áp lực, sợ bị đánh giá – kể cả khi đã đi làm lâu năm.'],
+    ['Lạc đường', 'Hành động', '迷', 'lac duong', 'Điềm cần cân nhắc kỹ trước quyết định.', 'Phân vân, chưa rõ phương hướng.'],
+    ['Bơi, chết đuối', 'Hành động', '泳', 'boi chet duoi', 'Bơi giỏi là điềm vượt qua khó khăn; đuối nước là điềm nên nghỉ ngơi, giữ sức khỏe.', 'Cảm giác quá tải, ngập trong công việc hoặc cảm xúc.'],
+    ['Bị trộm, bị cướp', 'Hành động', '盜', 'trom cuop mat do', 'Điềm nên cẩn thận tài sản, giấy tờ.', 'Lo sợ mất mát thời gian, công sức hoặc sự riêng tư.'],
+    ['Đi vệ sinh, phân', 'Hành động', '糞', 'phan di ve sinh', 'Nhiều người tin đây là điềm tài lộc, có tiền bạc.', 'Nhu cầu “xả bỏ” những điều tiêu cực.'],
+    ['Leo cầu thang', 'Hành động', '梯', 'cau thang leo', 'Đi lên là điềm thăng tiến; đi xuống là điềm chậm lại.', 'Thể hiện tiến trình phát triển của bản thân.'],
+    ['Trúng số', 'Hành động', '彩', 'trung so xo so', 'Dân gian thường hiểu theo hướng ngược, khuyên chi tiêu cẩn thận.', 'Mong muốn thay đổi nhanh, giải tỏa áp lực tài chính.'],
+    // ---- Nơi chốn ----
+    ['Chùa, đền', 'Nơi chốn', '寺', 'chua den di le', 'Điềm bình an, được che chở.', 'Nhu cầu tìm sự tĩnh tâm, cân bằng.'],
+    ['Nghĩa địa', 'Nơi chốn', '墓', 'nghia dia mo', 'Nhiều người tin đây là điềm thay đổi tốt, trường thọ.', 'Suy ngẫm về quá khứ, những điều đã kết thúc.'],
+    ['Trường học', 'Nơi chốn', '校', 'truong hoc', 'Điềm có thêm hiểu biết, học hỏi.', 'Hoài niệm hoặc cảm giác đang bị “kiểm tra” trong cuộc sống.'],
+    ['Bệnh viện', 'Nơi chốn', '醫', 'benh vien', 'Điềm nên quan tâm sức khỏe.', 'Nhu cầu được chữa lành, nghỉ ngơi.'],
+    ['Cây cầu', 'Nơi chốn', '橋', 'cau', 'Qua cầu suôn sẻ là điềm vượt qua thử thách; cầu gãy là điềm trở ngại.', 'Giai đoạn chuyển tiếp trong cuộc sống.']
+  ];
+  var GROUPS = ['Tất cả', 'Con vật', 'Thiên nhiên', 'Con người', 'Cơ thể', 'Đồ vật', 'Hành động', 'Nơi chốn'];
+  var $ = function (id) { return document.getElementById(id); };
+  function norm(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd'); }
+  var group = 'Tất cả';
+  $('chips').innerHTML = GROUPS.map(function (g) { return '<button type="button" data-g="' + g + '"' + (g === group ? ' class="on"' : '') + '>' + g + '</button>'; }).join('');
+  $('chips').onclick = function (e) {
+    var b = e.target.closest('[data-g]'); if (!b) return; group = b.getAttribute('data-g');
+    [].forEach.call(this.children, function (x) { x.classList.toggle('on', x === b); }); render();
+  };
+  function render() {
+    var q = norm($('q').value.trim());
+    // khớp theo đầu từ trong tên + từ khóa; từ khớp trọn được xếp trước
+    function score(r) {
+      var words = norm(r[0] + ' ' + r[3]).split(/[^a-z0-9]+/), qs = q.split(/\s+/), s = 0;
+      for (var i = 0; i < qs.length; i++) {
+        var best = 0;
+        for (var j = 0; j < words.length; j++) { if (words[j] === qs[i]) { best = 2; break; } if (words[j].indexOf(qs[i]) === 0) best = 1; }
+        if (!best) return 0; s += best;
+      }
+      return s;
+    }
+    var res = D.filter(function (r) { return group === 'Tất cả' || r[1] === group; });
+    if (q) res = res.map(function (r) { return [score(r), r]; }).filter(function (x) { return x[0]; })
+      .sort(function (a, b) { return b[0] - a[0]; }).map(function (x) { return x[1]; });
+    $('count').textContent = res.length + ' giấc mơ' + (q ? ' khớp với “' + $('q').value.trim() + '”' : '');
+    $('list').innerHTML = res.length ? res.map(function (r) {
+      return '<details class="item"><summary><span class="ic">' + r[2] + '</span><span><div class="nm">Mơ thấy ' + r[0].toLowerCase() + '</div><div class="gp">' + r[1] + '</div></span><span class="ar">›</span></summary>' +
+        '<div class="body"><div class="row dg"><b>Dân gian</b>' + r[4] + '</div><div class="row tl"><b>Tâm lý</b>' + r[5] + '</div></div></details>';
+    }).join('') : '<div class="empty">Chưa có giấc mơ này trong danh mục. Thử từ khóa ngắn hơn, ví dụ “nước”, “rắn”, “tiền”.</div>';
+  }
+  $('q').addEventListener('input', render);
+  render();
+  try { var th = localStorage.getItem('tv-theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch (e) { }
+})();
+</script>
+</body>
+</html>

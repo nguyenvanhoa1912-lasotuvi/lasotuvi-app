@@ -33,6 +33,9 @@ mkdirSync(join(OUT, 'app', 'vendor'), { recursive: true });
 copyFileSync(join(ROOT, 'node_modules/html2canvas-pro/dist/html2canvas-pro.min.js'), join(OUT, 'app', 'vendor', 'html2canvas.min.js'));
 copyFileSync(join(ROOT, 'node_modules/jspdf/dist/jspdf.umd.min.js'), join(OUT, 'app', 'vendor', 'jspdf.umd.min.js'));
 
+// tài nguyên phụ trong web/ (vd. lich-engine.js) – copy nguyên, không chèn script app
+for (const f of readdirSync(WEB).filter(f => /\.(js|css|json|png|jpg|svg)$/i.test(f))) copyFileSync(join(WEB, f), join(OUT, f));
+
 const pages = readdirSync(WEB).filter(f => f.toLowerCase().endsWith('.html'));
 if (!pages.includes('index.html')) { console.error('✖ Thiếu web/index.html'); process.exit(1); }
 
