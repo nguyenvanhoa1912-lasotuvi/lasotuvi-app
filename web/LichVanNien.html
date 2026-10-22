@@ -100,6 +100,34 @@ button,input,select{font:inherit;color:inherit}
 .conv input,.conv select{border:1px solid var(--line2);background:var(--paper);border-radius:8px;padding:6px 8px;width:72px}
 .conv label{font-size:13px;color:var(--ink2)}
 .conv-out{margin-top:8px;font-size:15px}
+/* ---- Ngày sinh – Ngày giỗ ---- */
+.ev-mark{position:absolute;left:4px;bottom:2px;font-size:9px;line-height:1;color:var(--gold)}
+.cell.sel .ev-mark{color:#fff6e8}
+.bdg.ev{background:var(--gold);color:#fff6e8;border-color:transparent;font-weight:600}
+.soon{display:none;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--gold);border-radius:12px;padding:10px 12px;margin:4px 0 8px;cursor:pointer;font-size:14px}
+.soon .han{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#fff6e8;font-weight:900}
+.evf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.evf label{display:flex;flex-direction:column;font-size:12px;letter-spacing:.06em;color:var(--muted);gap:3px}
+.evf input,.evf select{border:1px solid var(--line2);background:var(--paper);border-radius:8px;padding:7px 8px;font-size:15px;width:100%;min-width:0}
+.evf .full{grid-column:1/-1}
+.evf .row3{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px}
+.evf .acts{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.evf .msg{margin-right:auto;font-size:13px;color:var(--red)}
+.evl{list-style:none;margin:12px 0 0;padding:0}
+.evl li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px dashed var(--line)}
+.evl .ic{flex:0 0 40px;height:40px;border-radius:10px;display:grid;place-items:center;font:900 19px 'Noto Serif SC',serif;color:#fff6e8;background:var(--gold)}
+.evl .ic.gio{background:var(--seal)}
+.evl .b{flex:1;min-width:0}
+.evl .nm{font-weight:700}
+.evl .sub{font-size:13px;color:var(--ink2)}
+.evl .sub span{color:var(--muted)}
+.evl .left{flex:0 0 auto;text-align:right;font-size:12px;color:var(--muted)}
+.evl .left b{display:block;font-size:15px;color:var(--ink)}
+.evl .left.near b{color:var(--red)}
+.evl .ops{display:flex;gap:6px;margin-top:5px}
+.evl .ops button{font-size:12px;padding:3px 10px;white-space:nowrap}
+.bk{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.bk textarea{width:100%;min-height:90px;border:1px solid var(--line2);background:var(--paper);color:inherit;border-radius:8px;padding:8px;font:13px/1.4 monospace;display:none}
 footer{margin-top:24px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 footer li{margin:3px 0}
 @media (max-width:420px){
@@ -118,6 +146,8 @@ footer li{margin:3px 0}
     <div class="s">Lịch Vạn Niên</div>
     <p>Âm lịch, can chi, tiết khí, ngày giờ hoàng đạo – hắc đạo, 12 trực, nhị thập bát tú và các ngày kỵ theo lịch truyền thống.</p>
   </header>
+
+  <div class="soon" id="soon"><span class="han">記</span><div id="soonTxt"></div></div>
 
   <!-- ===== XEM NGÀY ===== -->
   <h2><span class="han">日</span>Xem ngày</h2>
@@ -148,7 +178,32 @@ footer li{margin:3px 0}
       <button class="btn" id="nextM" aria-label="Tháng sau">›</button>
     </div>
     <div class="grid" id="grid"></div>
-    <div class="legend"><span><i style="background:var(--good)"></i>Ngày hoàng đạo</span><span><i style="background:var(--line2);opacity:.6"></i>Ngày hắc đạo</span><span><b style="color:var(--red)">✕</b> Ngày kỵ (Tam nương, Nguyệt kỵ, Dương công)</span></div>
+    <div class="legend"><span><i style="background:var(--good)"></i>Ngày hoàng đạo</span><span><i style="background:var(--line2);opacity:.6"></i>Ngày hắc đạo</span><span><b style="color:var(--red)">✕</b> Ngày kỵ (Tam nương, Nguyệt kỵ, Dương công)</span><span><b style="color:var(--gold)">★</b> Ngày sinh / ngày giỗ đã lưu</span></div>
+  </div>
+
+  <!-- ===== NGÀY SINH – NGÀY GIỖ ===== -->
+  <h2 id="ev"><span class="han">記</span>Ngày sinh – Ngày giỗ</h2>
+  <div class="card">
+    <form class="evf" id="evForm" autocomplete="off">
+      <label class="full">Tên người<input id="eName" maxlength="60" placeholder="Ví dụ: Ông nội, Mẹ, Bé An…" required></label>
+      <label>Loại<select id="eType"><option value="gio">Ngày giỗ</option><option value="sinh">Sinh nhật</option></select></label>
+      <label>Theo lịch<select id="eCal"><option value="am">Âm lịch</option><option value="duong">Dương lịch</option></select></label>
+      <div class="row3">
+        <label>Ngày<input id="eD" type="number" min="1" max="31" inputmode="numeric" required></label>
+        <label>Tháng<input id="eM" type="number" min="1" max="12" inputmode="numeric" required></label>
+        <label id="eYLab">Năm mất<input id="eY" type="number" min="1800" max="2100" inputmode="numeric" placeholder="nếu biết"></label>
+      </div>
+      <label class="full">Ghi chú<input id="eNote" maxlength="120" placeholder="Ví dụ: Làm cỗ ở nhà bác cả"></label>
+      <div class="acts"><span class="msg" id="eMsg"></span><button type="button" class="btn" id="eCancel" style="display:none">Hủy sửa</button><button type="submit" class="btn red" id="eSave">Lưu</button></div>
+    </form>
+    <ul class="evl" id="evList"></ul>
+    <p class="note">Dữ liệu chỉ lưu trên điện thoại này, không gửi đi đâu. Ngày giỗ âm lịch rơi vào ngày 30 mà tháng đó thiếu thì tính là ngày 29; năm có tháng nhuận thì làm giỗ ở tháng chính. Nên <b>Sao lưu</b> trước khi gỡ app hoặc đổi máy.</p>
+    <div class="bk">
+      <button type="button" class="btn" id="bkOut">Sao lưu</button>
+      <button type="button" class="btn" id="bkIn">Khôi phục</button>
+      <textarea id="bkTxt" aria-label="Dữ liệu sao lưu" placeholder="Dán dữ liệu sao lưu vào đây rồi bấm Khôi phục lần nữa"></textarea>
+      <span class="note" id="bkMsg" style="margin:0"></span>
+    </div>
   </div>
 
   <!-- ===== NGÀY TỐT ===== -->
@@ -198,6 +253,142 @@ footer li{margin:3px 0}
   function daysIn(m, y) { return new Date(y, m, 0).getDate(); }
   function lunText(L) { return 'Tháng ' + L.month + (L.leap ? ' nhuận' : '') + (L.monthLen === 30 ? ' (đủ)' : ' (thiếu)'); }
 
+  /* ================= Ngày sinh – Ngày giỗ (lưu trên máy) ================= */
+  var KEY = 'lstv-events', EV = [];
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function clean(a) {
+    return (Array.isArray(a) ? a : []).filter(function (e) {
+      return e && typeof e.name === 'string' && e.name.trim() && (e.type === 'sinh' || e.type === 'gio') && (e.cal === 'am' || e.cal === 'duong') &&
+        e.d >= 1 && e.d <= (e.cal === 'am' ? 30 : 31) && e.m >= 1 && e.m <= 12;
+    }).map(function (e) {
+      return { id: e.id || ('e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)), name: e.name.trim().slice(0, 60), type: e.type, cal: e.cal, d: +e.d, m: +e.m, y: e.y ? +e.y : null, note: (e.note || '').slice(0, 120) };
+    });
+  }
+  function loadEv() { try { EV = clean(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) { EV = []; } }
+  function saveEv() { try { localStorage.setItem(KEY, JSON.stringify(EV)); return true; } catch (e) { return false; } }
+  function jdOf(o) { return V.jdFromDate(o.d, o.m, o.y); }
+  function lunarMonthLen(m, y) { var r = V.lunar2solar(1, m, y, 0); return r ? V.solar2lunar(r[0], r[1], r[2]).monthLen : 30; }
+  // ngày dương của lần kỷ niệm kế tiếp (tính từ hôm nay)
+  function nextOcc(e, today) {
+    var tj = jdOf(today), cands = [];
+    if (e.cal === 'duong') {
+      [today.y, today.y + 1].forEach(function (y) {
+        var d = Math.min(e.d, daysIn(e.m, y));
+        cands.push({ d: d, m: e.m, y: y, cy: y });
+      });
+    } else {
+      var ly = V.solar2lunar(today.d, today.m, today.y).year;
+      [ly - 1, ly, ly + 1].forEach(function (y) {
+        var d = Math.min(e.d, lunarMonthLen(e.m, y)), r = V.lunar2solar(d, e.m, y, 0);
+        if (r) cands.push({ d: r[0], m: r[1], y: r[2], cy: y, ld: d });
+      });
+    }
+    for (var i = 0; i < cands.length; i++) { var c = cands[i], j = jdOf(c); if (j >= tj) { c.left = j - tj; return c; } }
+    return null;
+  }
+  // các sự kiện rơi vào 1 ngày dương (dùng cho lưới tháng & thẻ ngày)
+  function eventsOn(d, m, y, L) {
+    return EV.filter(function (e) {
+      if (e.cal === 'duong') return e.m === m && (e.d === d || (e.d > daysIn(m, y) && d === daysIn(m, y)));
+      if (L.leap || e.m !== L.month) return false;
+      return e.d === L.day || (e.d === 30 && L.monthLen === 29 && L.day === 29);
+    });
+  }
+  function evLabel(e) { return (e.type === 'gio' ? 'Giỗ ' : 'Sinh nhật ') + e.name; }
+  function todayObj() { var t = new Date(); return { d: t.getDate(), m: t.getMonth() + 1, y: t.getFullYear() }; }
+
+  function renderEvents() {
+    var today = todayObj();
+    var rows = EV.map(function (e) { return { e: e, n: nextOcc(e, today) }; }).filter(function (x) { return x.n; })
+      .sort(function (a, b) { return a.n.left - b.n.left; });
+    $('evList').innerHTML = rows.length ? rows.map(function (x) {
+      var e = x.e, n = x.n, I = V.dayInfo(n.d, n.m, n.y);
+      var orig = (e.cal === 'am' ? 'Âm lịch ' : 'Dương lịch ') + e.d + '/' + e.m + (e.y ? '/' + e.y : '');
+      var extra = '';
+      if (e.y) {
+        var k = n.cy - e.y;
+        if (e.type === 'sinh' && k >= 0) extra = ' · tròn ' + k + ' tuổi';
+        if (e.type === 'gio' && k >= 1) extra = ' · giỗ lần thứ ' + k + (k === 1 ? ' (giỗ đầu)' : k === 2 ? ' (giỗ hết)' : '');
+      }
+      var when = n.left === 0 ? 'Hôm nay' : n.left === 1 ? 'Ngày mai' : 'Còn ' + n.left + ' ngày';
+      var lunarNote = e.cal === 'am' ? (n.ld !== e.d ? ' (tháng thiếu, làm ngày ' + n.ld + ')' : '') : ' · ÂL ' + I.lunar.day + '/' + I.lunar.month;
+      return '<li><div class="ic' + (e.type === 'gio' ? ' gio' : '') + '">' + (e.type === 'gio' ? '忌' : '壽') + '</div>' +
+        '<div class="b"><div class="nm">' + esc(evLabel(e)) + '</div>' +
+        '<div class="sub">' + orig + extra + '</div>' +
+        '<div class="sub"><span>Lần tới:</span> ' + I.solar.thu + ', ' + pad(n.d) + '/' + pad(n.m) + '/' + n.y + lunarNote + ' · ngày ' + I.canChi.day + '</div>' +
+        (e.note ? '<div class="sub"><span>Ghi chú:</span> ' + esc(e.note) + '</div>' : '') +
+        '<div class="ops"><button class="btn" data-op="view" data-id="' + e.id + '">Xem ngày</button><button class="btn" data-op="edit" data-id="' + e.id + '">Sửa</button><button class="btn" data-op="del" data-id="' + e.id + '">Xóa</button></div></div>' +
+        '<div class="left' + (n.left <= 7 ? ' near' : '') + '"><b>' + when + '</b></div></li>';
+    }).join('') : '<li style="color:var(--muted)">Chưa có ngày nào. Nhập tên, ngày tháng rồi bấm Lưu.</li>';
+    var near = rows.filter(function (x) { return x.n.left <= 30; }).slice(0, 2);
+    $('soon').style.display = near.length ? 'flex' : 'none';
+    $('soonTxt').innerHTML = near.map(function (x) {
+      return '<b>' + esc(evLabel(x.e)) + '</b> – ' + (x.n.left === 0 ? 'hôm nay' : x.n.left === 1 ? 'ngày mai' : 'còn ' + x.n.left + ' ngày') + ' (' + pad(x.n.d) + '/' + pad(x.n.m) + ')';
+    }).join('<br>');
+  }
+
+  var editId = null;
+  function syncForm() {
+    var gio = $('eType').value === 'gio';
+    $('eYLab').firstChild.nodeValue = gio ? 'Năm mất' : 'Năm sinh';
+    $('eD').max = $('eCal').value === 'am' ? 30 : 31;
+  }
+  $('eType').onchange = function () { $('eCal').value = this.value === 'gio' ? 'am' : $('eCal').value; syncForm(); };
+  $('eCal').onchange = syncForm;
+  function resetForm() { $('evForm').reset(); editId = null; $('eCancel').style.display = 'none'; $('eSave').textContent = 'Lưu'; syncForm(); }
+  $('eCancel').onclick = function () { resetForm(); $('eMsg').textContent = ''; };
+  $('evForm').onsubmit = function (ev) {
+    ev.preventDefault();
+    var e = { id: editId, name: $('eName').value, type: $('eType').value, cal: $('eCal').value, d: +$('eD').value, m: +$('eM').value, y: $('eY').value ? +$('eY').value : null, note: $('eNote').value };
+    var maxD = e.cal === 'am' ? 30 : (e.m === 2 ? 29 : daysIn(e.m, 2001));
+    if (!e.name.trim()) { $('eMsg').textContent = 'Nhập tên người.'; return; }
+    if (!(e.m >= 1 && e.m <= 12 && e.d >= 1 && e.d <= maxD)) { $('eMsg').textContent = 'Ngày/tháng không hợp lệ (tháng ' + (e.m || '?') + ' tối đa ' + maxD + ' ngày).'; return; }
+    if (e.y && !(e.y >= 1800 && e.y <= 2100)) { $('eMsg').textContent = 'Năm không hợp lệ.'; return; }
+    e = clean([e])[0];
+    if (editId) EV = EV.map(function (x) { return x.id === editId ? e : x; }); else EV.push(e);
+    $('eMsg').textContent = saveEv() ? '' : 'Không lưu được trên máy này.';
+    resetForm(); renderEvents(); renderDay(); renderMonth();
+  };
+  $('evList').onclick = function (ev) {
+    var b = ev.target.closest('[data-op]'); if (!b) return;
+    var id = b.getAttribute('data-id'), e = EV.filter(function (x) { return x.id === id; })[0]; if (!e) return;
+    var op = b.getAttribute('data-op');
+    if (op === 'view') { var n = nextOcc(e, todayObj()); if (n) { go({ d: n.d, m: n.m, y: n.y }); document.querySelector('.day').scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
+    if (op === 'edit') {
+      editId = id; $('eName').value = e.name; $('eType').value = e.type; $('eCal').value = e.cal; $('eD').value = e.d; $('eM').value = e.m; $('eY').value = e.y || ''; $('eNote').value = e.note || '';
+      $('eSave').textContent = 'Cập nhật'; $('eCancel').style.display = ''; syncForm(); $('evForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (op === 'del') {
+      if (b.getAttribute('data-sure') !== '1') { b.setAttribute('data-sure', '1'); b.textContent = 'Bấm lần nữa để xóa'; b.style.background = 'var(--red)'; b.style.color = '#fff6e8'; return; }
+      EV = EV.filter(function (x) { return x.id !== id; }); saveEv(); if (editId === id) resetForm(); renderEvents(); renderDay(); renderMonth();
+    }
+  };
+  $('soon').onclick = function () { $('ev').scrollIntoView({ behavior: 'smooth' }); };
+
+  // Sao lưu / Khôi phục
+  $('bkOut').onclick = function () {
+    if (!EV.length) { $('bkMsg').textContent = 'Chưa có dữ liệu để sao lưu.'; return; }
+    var txt = JSON.stringify({ app: 'LaSoTuVi', v: 1, events: EV });
+    var CAP = window.Capacitor, SH = CAP && CAP.isNativePlatform && CAP.isNativePlatform() && CAP.Plugins && CAP.Plugins.Share;
+    if (SH) { SH.share({ title: 'Sao lưu ngày sinh – ngày giỗ', text: txt, dialogTitle: 'Gửi bản sao lưu (Zalo, Gmail, Ghi chú…)' }).catch(function () { }); return; }
+    var t = $('bkTxt'); t.style.display = 'block'; t.dataset.mode = 'out'; t.value = txt; t.select();
+    var okMsg = function () { $('bkMsg').textContent = 'Đã chép dữ liệu. Hãy dán vào Ghi chú/Zalo để cất giữ.'; }, noMsg = function () { $('bkMsg').textContent = 'Hãy chép đoạn dữ liệu trên để cất giữ.'; };
+    try { navigator.clipboard.writeText(txt).then(okMsg, noMsg); } catch (e) { noMsg(); }
+  };
+  $('bkIn').onclick = function () {
+    var t = $('bkTxt');
+    if (t.dataset.mode !== 'in' || !t.value.trim()) { t.style.display = 'block'; t.dataset.mode = 'in'; t.value = ''; t.focus(); $('bkMsg').textContent = 'Dán dữ liệu sao lưu vào ô trên rồi bấm Khôi phục.'; return; }
+    try {
+      var j = JSON.parse(t.value.trim()), arr = clean(j.events || j), have = {}, added = 0;
+      EV.forEach(function (x) { have[x.type + x.cal + x.d + '/' + x.m + x.name] = 1; });
+      arr.forEach(function (x) { var k = x.type + x.cal + x.d + '/' + x.m + x.name; if (!have[k]) { have[k] = 1; EV.push(x); added++; } });
+      saveEv(); renderEvents(); renderDay(); renderMonth();
+      $('bkMsg').textContent = 'Đã khôi phục ' + added + ' mục mới' + (arr.length > added ? ' (bỏ qua ' + (arr.length - added) + ' mục trùng)' : '') + '.';
+      t.value = ''; t.style.display = 'none'; t.dataset.mode = '';
+    } catch (e) { $('bkMsg').textContent = 'Dữ liệu không đúng định dạng sao lưu.'; }
+  };
+  loadEv();
+
   function renderDay() {
     var I = V.dayInfo(sel.d, sel.m, sel.y), L = I.lunar;
     $('pick').value = iso(sel);
@@ -211,6 +402,7 @@ footer li{margin:3px 0}
     b.push('<span class="bdg ' + (I.tu28.good ? 'good' : 'bad') + '">Sao ' + I.tu28.name + '</span>');
     if (I.giaoTiet) b.push('<span class="bdg">Giao tiết ' + I.tietKhi + '</span>');
     I.ky.forEach(function (k) { b.push('<span class="bdg warn">' + k + '</span>'); });
+    eventsOn(sel.d, sel.m, sel.y, L).forEach(function (e) { b.unshift('<span class="bdg ev">' + (e.type === 'gio' ? '忌 ' : '壽 ') + esc(evLabel(e)) + '</span>'); });
     $('badges').innerHTML = b.join('');
     var rows = [
       ['Ngày', I.canChi.day + ' <span class="han">' + I.canChi.dayHan + '</span>'],
@@ -244,7 +436,7 @@ footer li{margin:3px 0}
       var cls = 'cell' + (wd === 6 ? ' sun' : '') + (isNow(d) ? ' today' : '') + (d === sel.d && view.m === sel.m && view.y === sel.y ? ' sel' : '');
       html.push('<button class="' + cls + '" data-d="' + d + '" aria-label="Ngày ' + d + ', âm lịch ' + L.day + '/' + L.month + '">' +
         '<div class="s">' + d + '</div><div class="l' + (L.day === 1 ? ' m1' : '') + '">' + lab + '</div>' +
-        '<span class="dot ' + (I.hoangDao.good ? 'g' : 'b') + '"></span>' + (I.ky.length ? '<span class="x">✕</span>' : '') + '</button>');
+        '<span class="dot ' + (I.hoangDao.good ? 'g' : 'b') + '"></span>' + (I.ky.length ? '<span class="x">✕</span>' : '') + (eventsOn(d, view.m, view.y, L).length ? '<span class="ev-mark">★</span>' : '') + '</button>');
       if (I.hoangDao.good && !I.ky.length && I.trucLoai !== 'xấu') good.push(I);
     }
     $('grid').innerHTML = html.join('');
@@ -283,7 +475,7 @@ footer li{margin:3px 0}
     $('cOut').innerHTML = 'Ngày ' + d + '/' + m + (leap ? ' nhuận' : '') + ' âm lịch năm ' + I.canChi.year + ' là <b>' + I.solar.thu + ', ' + pad(r[0]) + '/' + pad(r[1]) + '/' + r[2] + '</b> (ngày ' + I.canChi.day + '). <a href="#" id="cView">Xem ngày này</a>';
     $('cView').onclick = function (e) { e.preventDefault(); go({ d: r[0], m: r[1], y: r[2] }); document.querySelector('.day').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   };
-  go(sel);
+  syncForm(); renderEvents(); go(sel);
   try { var th = localStorage.getItem('tv-theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch (e) { }
 })();
 </script>
