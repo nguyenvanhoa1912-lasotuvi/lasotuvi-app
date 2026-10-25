@@ -47,6 +47,7 @@
     { href: 'SaoTuVi.html', han: '星', vi: 'Chư tinh' },
     { href: 'KinhDich.html', han: '易', vi: 'Kinh Dịch' },
     { href: 'LichVanNien.html', han: '曆', vi: 'Lịch' },
+    { href: 'LaBan.html', han: '羅', vi: 'La bàn' },
     { href: 'GiaiMong.html', han: '夢', vi: 'Giải mộng' },
     { href: 'gioi-thieu.html', han: '序', vi: 'Giới thiệu' }
   ];

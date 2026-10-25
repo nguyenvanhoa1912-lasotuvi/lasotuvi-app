@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Bàn Phong Thủy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:wght@600;700&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#efe2c2; --paper:#f8efd9; --paper2:#f3e6c6; --ink:#2a1c10; --ink2:#4f3a26; --muted:#86704f;
+  --line:#d8c297; --line2:#b8955a; --red:#9c1f14; --gold:#a8792a; --seal:#b3261a; --sealtext:#fff6e8;
+  --good:#2c6e3c; --goodbg:#dfead2; --bad:#9c1f14; --badbg:#f2d9cf;
+  --dial:#f6ead0; --dial2:#ead8b0; --dialink:#2a1c10;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#140c08; --paper:#21150e; --paper2:#2a1a11; --ink:#f0e2c4; --ink2:#d6c39f; --muted:#a48c66;
+    --line:#4a3421; --line2:#7a5a30; --red:#e0584a; --gold:#d4a94e; --good:#7cc48a; --goodbg:#1f2b1c; --bad:#e8705f; --badbg:#3a1c16;
+    --dial:#2a1a11; --dial2:#3a2616; --dialink:#f0e2c4;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#140c08; --paper:#21150e; --paper2:#2a1a11; --ink:#f0e2c4; --ink2:#d6c39f; --muted:#a48c66;
+  --line:#4a3421; --line2:#7a5a30; --red:#e0584a; --gold:#d4a94e; --good:#7cc48a; --goodbg:#1f2b1c; --bad:#e8705f; --badbg:#3a1c16;
+  --dial:#2a1a11; --dial2:#3a2616; --dialink:#f0e2c4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'Noto Serif',Georgia,serif}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 40px}
+.han{font-family:'Noto Serif SC',serif}
+header.top{text-align:center;margin:6px 0 10px}
+header.top .t{font:900 40px/1.1 'Noto Serif SC',serif;color:var(--red);letter-spacing:.08em}
+header.top .s{font:700 15px 'Noto Serif',serif;letter-spacing:.32em;text-transform:uppercase;color:var(--ink2);margin-top:4px}
+header.top p{margin:6px auto 0;max-width:600px;color:var(--muted);font-style:italic;font-size:14px}
+h2{font:700 20px 'Playfair Display','Noto Serif',serif;margin:22px 0 8px;display:flex;align-items:center;gap:10px}
+h2 .han{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--seal);color:var(--sealtext);font-size:17px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;box-shadow:0 2px 10px rgba(60,30,10,.06)}
+button,input,select{font:inherit;color:inherit}
+.btn{appearance:none;border:1px solid var(--line2);background:var(--paper2);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px;white-space:nowrap}
+.btn.red{background:var(--red);color:#fff6e8;border-color:transparent}
+.btn.on{background:var(--gold);color:#fff6e8;border-color:transparent}
+
+/* ---- Mặt la bàn ---- */
+.dialbox{position:relative;width:min(100%,430px);margin:6px auto 0;aspect-ratio:1/1;touch-action:none;user-select:none}
+.dialbox svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#rose{transition:none}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:27%;aspect-ratio:1/1;border-radius:50%;
+  background:var(--paper);border:2px solid var(--gold);display:grid;place-items:center;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.center .deg{font:700 clamp(20px,6.5vw,30px)/1 'Playfair Display','Noto Serif',serif;color:var(--red)}
+.center .dir{font-size:clamp(10px,2.9vw,13px);font-weight:700;color:var(--ink2);line-height:1.2;margin-top:2px}
+.status{text-align:center;font-size:13px;color:var(--muted);margin:8px 0 0;min-height:20px}
+.status.warn{color:var(--red);font-weight:600}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.ctrl input{width:108px;border:1px solid var(--line2);background:var(--paper);border-radius:999px;padding:6px 10px;text-align:center}
+
+/* ---- Kết quả ---- */
+.read{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:4px;border-top:1px dashed var(--line)}
+.read div{padding:8px 4px;border-bottom:1px dashed var(--line);font-size:14.5px}
+.read b{display:block;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.verdict{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:14.5px;display:none}
+.verdict.good{display:block;background:var(--goodbg);color:var(--good)}
+.verdict.bad{display:block;background:var(--badbg);color:var(--bad)}
+.verdict.none{display:block;background:var(--paper2);color:var(--ink2)}
+.note{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+
+/* ---- Hợp tuổi ---- */
+.pf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:end}
+.pf label{display:flex;flex-direction:column;font-size:12px;letter-spacing:.06em;color:var(--muted);gap:3px}
+.pf input,.pf select{border:1px solid var(--line2);background:var(--paper);border-radius:8px;padding:7px 8px;font-size:15px;width:100%;min-width:0}
+.pf .acts{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.pf .msg{margin-right:auto;font-size:13px;color:var(--red)}
+.kua{margin-top:12px;display:none}
+.kua .hd{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.kua .hd .q{flex:0 0 52px;height:52px;border-radius:12px;background:var(--seal);color:var(--sealtext);display:grid;place-items:center;font:900 26px 'Noto Serif SC',serif}
+.kua .hd .t{font-size:14.5px}
+.kua .hd .t b{font-size:17px}
+table.bt{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+table.bt th{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 4px;border-bottom:1px solid var(--line2)}
+table.bt td{padding:7px 4px;border-bottom:1px dashed var(--line);vertical-align:top}
+table.bt tr.g td:first-child{color:var(--good);font-weight:700}
+table.bt tr.b td:first-child{color:var(--bad);font-weight:700}
+table.bt tr.cur td{background:var(--paper2)}
+table.bt td small{color:var(--muted)}
+footer{margin-top:24px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+footer li{margin:3px 0}
+@media (max-width:420px){ .pf{grid-template-columns:repeat(3,minmax(0,1fr))} .pf .sex{grid-column:1/-1} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="t">羅盤</div>
+    <div class="s">La Bàn Phong Thủy</div>
+    <p>Đo hướng nhà, hướng cửa bằng cảm biến la bàn của điện thoại; tra 24 sơn, bát quái và hướng hợp tuổi theo Bát trạch.</p>
+  </header>
+
+  <div class="card">
+    <div class="dialbox" id="dialbox">
+      <svg viewBox="0 0 400 400" aria-hidden="true"><g id="rose"></g></svg>
+      <svg viewBox="0 0 400 400" aria-hidden="true">
+        <line x1="200" y1="6" x2="200" y2="394" stroke="#c0281b" stroke-width="1.3" opacity=".85"/>
+        <line x1="6" y1="200" x2="394" y2="200" stroke="#c0281b" stroke-width="1" opacity=".5"/>
+        <path d="M200 -10 L189 10 L211 10 Z" fill="#c0281b"/>
+      </svg>
+      <div class="center"><div><div class="deg" id="cDeg">–</div><div class="dir" id="cDir">Đang chờ</div></div></div>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="ctrl">
+      <button class="btn red" id="start">Bật la bàn</button>
+      <button class="btn" id="lock">Khóa hướng</button>
+      <input type="number" id="manual" min="0" max="359.9" step="0.5" inputmode="decimal" placeholder="Nhập độ" aria-label="Nhập độ thủ công">
+    </div>
+
+    <div class="read" id="read"></div>
+    <div class="verdict" id="verdict"></div>
+    <p class="note"><b>Cách đo hướng nhà:</b> đứng trong nhà, sát cửa chính, quay mặt ra ngoài. Cầm điện thoại nằm ngang, đầu máy chỉ thẳng ra ngoài (theo vạch đỏ). Đứng cách xe máy, cửa sắt, tủ lạnh, thiết bị điện ít nhất 1 m. Đo 2–3 lần ở các vị trí khác nhau rồi bấm <b>Khóa hướng</b> để đọc kết quả.</p>
+  </div>
+
+  <h2><span class="han">宅</span>Hướng hợp tuổi (Bát trạch)</h2>
+  <div class="card">
+    <form class="pf" id="pf" autocomplete="off">
+      <label>Ngày sinh<input id="pD" type="number" min="1" max="31" inputmode="numeric" placeholder="DL"></label>
+      <label>Tháng<input id="pM" type="number" min="1" max="12" inputmode="numeric" placeholder="DL"></label>
+      <label>Năm sinh<input id="pY" type="number" min="1900" max="2100" inputmode="numeric" required></label>
+      <label class="sex">Giới tính<select id="pS"><option value="nam">Nam</option><option value="nu">Nữ</option></select></label>
+      <div class="acts"><span class="msg" id="pMsg"></span><button type="submit" class="btn red">Xem hướng hợp</button></div>
+    </form>
+    <p class="note" style="margin-top:6px">Nhập ngày, tháng, năm sinh <b>dương lịch</b> để app tự đổi sang năm âm lịch (người sinh trước Tết tính theo năm âm lịch trước đó). Nếu chỉ nhập năm, app tính theo năm đó.</p>
+    <div class="kua" id="kua"></div>
+  </div>
+
+  <footer>
+    <b>Cơ sở và lưu ý:</b>
+    <ul>
+      <li>24 sơn, mỗi sơn 15°, khởi từ sơn Tý ở chính Bắc (352,5°–7,5°); bát quái theo Hậu thiên (Khảm Bắc, Ly Nam, Chấn Đông, Đoài Tây…), mỗi quái 45°.</li>
+      <li>Cung phi (mệnh quái) tính theo năm âm lịch và giới tính; người mệnh quái 5 thì nam thuộc Khôn, nữ thuộc Cấn. Đông tứ mệnh: Khảm, Ly, Chấn, Tốn; Tây tứ mệnh: Càn, Khôn, Cấn, Đoài.</li>
+      <li>8 hướng theo Bát trạch: Sinh khí, Thiên y, Diên niên, Phục vị (tốt); Họa hại, Lục sát, Ngũ quỷ, Tuyệt mệnh (xấu). Ý nghĩa mỗi hướng được ghi theo cách hiểu phổ biến.</li>
+      <li>La bàn điện thoại dùng cảm biến từ trường, thường lệch vài độ và dễ bị nhiễu bởi kim loại, nam châm. Khi số đo gần ranh giới hai sơn, kết quả có thể sai sơn. Với việc quan trọng (xây nhà, đặt cửa), nên kiểm tra lại bằng la bàn chuyên dụng hoặc nhờ người có chuyên môn.</li>
+    </ul>
+    Nội dung mang tính tham khảo theo quan niệm phong thủy truyền thống.
+  </footer>
+</div>
+
+<script src="lich-engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg', C = 200;
+  var SON = [['Tý','子','c'],['Quý','癸','g'],['Sửu','丑','c'],['Cấn','艮','q'],['Dần','寅','c'],['Giáp','甲','g'],['Mão','卯','c'],['Ất','乙','g'],
+             ['Thìn','辰','c'],['Tốn','巽','q'],['Tỵ','巳','c'],['Bính','丙','g'],['Ngọ','午','c'],['Đinh','丁','g'],['Mùi','未','c'],['Khôn','坤','q'],
+             ['Thân','申','c'],['Canh','庚','g'],['Dậu','酉','c'],['Tân','辛','g'],['Tuất','戌','c'],['Càn','乾','q'],['Hợi','亥','c'],['Nhâm','壬','g']];
+  // 8 quái theo hướng (0 = Bắc): tên, chữ Hán, hướng, hào [sơ, trung, thượng] (1 = dương), ngũ hành
+  var QUAI = [['Khảm','坎','Bắc',[0,1,0],'Thủy'],['Cấn','艮','Đông Bắc',[0,0,1],'Thổ'],['Chấn','震','Đông',[1,0,0],'Mộc'],['Tốn','巽','Đông Nam',[0,1,1],'Mộc'],
+              ['Ly','離','Nam',[1,0,1],'Hỏa'],['Khôn','坤','Tây Nam',[0,0,0],'Thổ'],['Đoài','兌','Tây',[1,1,0],'Kim'],['Càn','乾','Tây Bắc',[1,1,1],'Kim']];
+  var DIRS = ['N','NE','E','SE','S','SW','W','NW'];
+  // Bát trạch: mệnh quái -> hướng của [Sinh khí, Thiên y, Diên niên, Phục vị, Họa hại, Lục sát, Ngũ quỷ, Tuyệt mệnh]
+  var BT = {
+    1: ['SE','E','S','N','W','NW','NE','SW'], 2: ['NE','W','NW','SW','E','S','SE','N'],
+    3: ['S','N','SE','E','SW','NE','NW','W'], 4: ['N','S','E','SE','NW','W','SW','NE'],
+    6: ['W','NE','SW','NW','SE','N','E','S'], 7: ['NW','SW','NE','W','N','SE','S','E'],
+    8: ['SW','NW','W','NE','S','E','N','SE'], 9: ['E','SE','N','S','NE','SW','W','NW']
+  };
+  var CAT = [['Sinh khí',1,'Tốt nhất: tài lộc, công danh, thăng tiến'],['Thiên y',1,'Sức khỏe, gặp quý nhân'],['Diên niên',1,'Gia đạo hòa thuận, bền vững'],['Phục vị',1,'Bình yên, vững vàng, thuận học hành'],
+             ['Họa hại',0,'Thị phi, trắc trở nhỏ'],['Lục sát',0,'Tranh chấp, bất hòa'],['Ngũ quỷ',0,'Hao tài, rủi ro'],['Tuyệt mệnh',0,'Xấu nhất: tổn hại lớn']];
+  var KUA_IDX = { 1: 0, 8: 1, 3: 2, 4: 3, 9: 4, 2: 5, 7: 6, 6: 7 };   // mệnh quái -> chỉ số QUAI
+
+  /* ---------- Vẽ mặt la bàn ---------- */
+  function pt(r, a) { var t = a * Math.PI / 180; return [C + r * Math.sin(t), C - r * Math.cos(t)]; }
+  function sector(r1, r2, a1, a2) {
+    var p1 = pt(r2, a1), p2 = pt(r2, a2), p3 = pt(r1, a2), p4 = pt(r1, a1), lg = (a2 - a1) > 180 ? 1 : 0;
+    return 'M' + p1 + 'A' + r2 + ',' + r2 + ' 0 ' + lg + ' 1 ' + p2 + 'L' + p3 + 'A' + r1 + ',' + r1 + ' 0 ' + lg + ' 0 ' + p4 + 'Z';
+  }
+  function el(tag, at, parent, txt) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; (parent || rose).appendChild(e); return e; }
+  var rose = $('rose'), quaiSecs = [];
+  function drawRose() {
+    rose.innerHTML = '';
+    el('circle', { cx: C, cy: C, r: 198, fill: 'var(--dial)', stroke: 'var(--gold)', 'stroke-width': 2 });
+    // vạch độ
+    for (var d = 0; d < 360; d += 2.5) {
+      var big = d % 15 === 7.5 ? 0 : d % 5 === 0;
+      var a = pt(198, d), b = pt(d % 15 === 7.5 ? 182 : big ? 189 : 193, d);
+      el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: d % 15 === 7.5 ? 'var(--red)' : 'var(--dialink)', 'stroke-width': d % 15 === 7.5 ? 1.2 : .6, opacity: d % 15 === 7.5 ? .9 : .55 });
+    }
+    for (d = 0; d < 360; d += 30) { var g = el('g', { transform: 'rotate(' + d + ' ' + C + ' ' + C + ')' }); el('text', { x: C, y: 14.5, 'text-anchor': 'middle', 'font-size': 8.5, fill: 'var(--muted)', 'font-family': 'Noto Serif' }, g, d); }
+    // vòng 24 sơn
+    el('circle', { cx: C, cy: C, r: 180, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 1 });
+    SON.forEach(function (s, i) {
+      var a = i * 15, g = el('g', { transform: 'rotate(' + a + ' ' + C + ' ' + C + ')' });
+      var col = s[2] === 'c' ? 'var(--red)' : s[2] === 'q' ? 'var(--gold)' : 'var(--dialink)';
+      el('text', { x: C, y: 38, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 900, fill: col, 'font-family': 'Noto Serif SC' }, g, s[1]);
+      el('text', { x: C, y: 51, 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 700, fill: col, 'font-family': 'Noto Serif' }, g, s[0]);
+      var l1 = pt(180, a + 7.5), l2 = pt(148, a + 7.5);
+      el('line', { x1: l1[0], y1: l1[1], x2: l2[0], y2: l2[1], stroke: 'var(--line2)', 'stroke-width': .6 });
+    });
+    // vòng bát quái (tô màu tốt/xấu khi có gia chủ)
+    el('circle', { cx: C, cy: C, r: 148, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 1 });
+    quaiSecs = [];
+    QUAI.forEach(function (q, i) {
+      var a = i * 45;
+      quaiSecs.push(el('path', { d: sector(92, 148, a - 22.5, a + 22.5), fill: 'transparent', stroke: 'var(--gold)', 'stroke-width': .8 }));
+      var g = el('g', { transform: 'rotate(' + a + ' ' + C + ' ' + C + ')' });
+      q[3].forEach(function (yang, k) {                 // hào sơ gần tâm nhất
+        var yy = 64 + (2 - k) * 7;                       // hào thượng ở vòng ngoài
+        if (yang) el('rect', { x: C - 14, y: yy, width: 28, height: 4, fill: 'var(--dialink)' }, g);
+        else { el('rect', { x: C - 14, y: yy, width: 11.5, height: 4, fill: 'var(--dialink)' }, g); el('rect', { x: C + 2.5, y: yy, width: 11.5, height: 4, fill: 'var(--dialink)' }, g); }
+      });
+      el('text', { x: C, y: 103, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: 'var(--dialink)', 'font-family': 'Noto Serif' }, g, q[0] + ' ' + q[1]);
+    });
+    el('circle', { cx: C, cy: C, r: 92, fill: 'var(--dial2)', stroke: 'var(--gold)', 'stroke-width': 1 });
+    // hướng
+    QUAI.forEach(function (q, i) {
+      var g = el('g', { transform: 'rotate(' + i * 45 + ' ' + C + ' ' + C + ')' });
+      el('text', { x: C, y: 120, 'text-anchor': 'middle', 'font-size': i % 2 ? 9.5 : 12, 'font-weight': 700, fill: i === 0 ? 'var(--red)' : 'var(--muted)', 'font-family': 'Noto Serif' }, g, q[2]);
+    });
+  }
+
+  /* ---------- Tra cứu theo độ ---------- */
+  function norm(a) { return ((a % 360) + 360) % 360; }
+  function sonAt(a) { return Math.floor(norm(a + 7.5) / 15) % 24; }
+  function quaiAt(a) { return Math.floor(norm(a + 22.5) / 45) % 8; }
+  function edge(a, w) { var x = norm(a + w / 2) % w; return Math.min(x, w - x); }   // khoảng cách tới ranh giới
+  function fmt(a) { return (Math.round(a * 10) / 10).toFixed(1).replace('.', ',') + '°'; }
+
+  /* ---------- Gia chủ (Bát trạch) ---------- */
+  var KEY = 'lstv-laban', owner = null;
+  function kuaOf(y, sex) {
+    var r = y % 9, k = sex === 'nam' ? (11 - r) % 9 : (r + 4) % 9; if (k === 0) k = 9;
+    if (k === 5) k = sex === 'nam' ? 2 : 8;
+    return k;
+  }
+  function catOfDir(k, dirIdx) { var i = BT[k].indexOf(DIRS[dirIdx]); return i; }
+  function renderOwner() {
+    var box = $('kua');
+    QUAI.forEach(function (q, i) { quaiSecs[i] && quaiSecs[i].setAttribute('fill', 'transparent'); });
+    if (!owner) { box.style.display = 'none'; return; }
+    var k = owner.k, q = QUAI[KUA_IDX[k]], east = [1, 3, 4, 9].indexOf(k) >= 0;
+    QUAI.forEach(function (qq, i) { var c = catOfDir(k, i); quaiSecs[i].setAttribute('fill', CAT[c][1] ? 'rgba(60,150,80,.20)' : 'rgba(200,50,40,.16)'); });
+    var rows = BT[k].map(function (d, c) {
+      var qi = DIRS.indexOf(d), qq = QUAI[qi], a = qi * 45;
+      return '<tr class="' + (CAT[c][1] ? 'g' : 'b') + '" data-q="' + qi + '"><td>' + CAT[c][0] + '</td><td><b>' + qq[2] + '</b><br><small>' + qq[0] + ' · ' + fmt(norm(a - 22.5)) + '–' + fmt(norm(a + 22.5)) + '</small></td><td>' + CAT[c][2] + '</td></tr>';
+    }).join('');
+    box.innerHTML = '<div class="hd"><div class="q">' + q[1] + '</div><div class="t">' + owner.label + '<br>Cung phi <b>' + q[0] + '</b> (' + q[4] + ') · <b>' + (east ? 'Đông' : 'Tây') + ' tứ mệnh</b></div></div>' +
+      '<table class="bt"><thead><tr><th>Hướng</th><th>Phương vị</th><th>Ý nghĩa</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p class="note">Vòng bát quái trên la bàn đã tô <span style="color:var(--good);font-weight:700">xanh</span> các hướng tốt, <span style="color:var(--bad);font-weight:700">đỏ</span> các hướng xấu với gia chủ.</p>';
+    box.style.display = 'block';
+    show(cur);
+  }
+  $('pf').onsubmit = function (ev) {
+    ev.preventDefault();
+    var d = +$('pD').value, m = +$('pM').value, y = +$('pY').value, sex = $('pS').value;
+    if (!(y >= 1900 && y <= 2100)) { $('pMsg').textContent = 'Nhập năm sinh 1900–2100.'; return; }
+    var ly = y, label;
+    if (d || m) {
+      if (!(m >= 1 && m <= 12 && d >= 1 && d <= new Date(y, m, 0).getDate())) { $('pMsg').textContent = 'Ngày/tháng sinh không hợp lệ.'; return; }
+      var L = window.LichVN.solar2lunar(d, m, y); ly = L.year;
+      label = (sex === 'nam' ? 'Nam' : 'Nữ') + ', sinh ' + d + '/' + m + '/' + y + ' (ÂL ' + L.day + '/' + L.month + ' năm ' + window.LichVN.dayInfo(d, m, y).canChi.year + ')';
+    } else {
+      label = (sex === 'nam' ? 'Nam' : 'Nữ') + ', năm âm lịch ' + y + ' (' + window.LichVN.CAN[(y + 6) % 10] + ' ' + window.LichVN.CHI[(y + 8) % 12] + ')';
+    }
+    $('pMsg').textContent = '';
+    owner = { k: kuaOf(ly, sex), label: label };
+    try { localStorage.setItem(KEY, JSON.stringify({ d: d || '', m: m || '', y: y, s: sex })); } catch (e) { }
+    renderOwner();
+  };
+
+  /* ---------- Hiển thị ---------- */
+  var cur = null, shown = null, locked = false;
+  function show(a) {
+    if (a == null) return;
+    var s = SON[sonAt(a)], q = QUAI[quaiAt(a)], t = norm(a + 180), ts = SON[sonAt(t)], tq = QUAI[quaiAt(t)];
+    $('cDeg').textContent = Math.round(a) % 360 + '°';
+    $('cDir').textContent = q[2];
+    var near = edge(a, 15) < 2;
+    $('read').innerHTML = [
+      ['Hướng (mặt nhìn ra)', fmt(a) + ' · <b style="display:inline;letter-spacing:0;text-transform:none;font-size:inherit;color:var(--ink)">' + q[2] + '</b>'],
+      ['Sơn hướng', s[0] + ' <span class="han">' + s[1] + '</span>'],
+      ['Quái hướng', q[0] + ' <span class="han">' + q[1] + '</span> (' + q[4] + ')'],
+      ['Tọa (lưng)', tq[2] + ' · sơn ' + ts[0] + ' <span class="han">' + ts[1] + '</span>'],
+      ['Gọi theo phong thủy', 'Tọa ' + ts[0] + ' hướng ' + s[0]],
+      ['Trạch nhà', tq[0] + ' trạch · ' + ([0, 2, 3, 4].indexOf(quaiAt(t)) >= 0 ? 'Đông tứ trạch' : 'Tây tứ trạch')]
+    ].map(function (r) { return '<div><b>' + r[0] + '</b>' + r[1] + '</div>'; }).join('') +
+      (near ? '<div style="grid-column:1/-1;color:var(--red);font-size:13px">Số đo gần ranh giới hai sơn (lệch dưới 2°): nên đo lại vài lần cho chắc.</div>' : '');
+    var v = $('verdict');
+    if (owner) {
+      var c = catOfDir(owner.k, quaiAt(a));
+      v.className = 'verdict ' + (CAT[c][1] ? 'good' : 'bad');
+      v.innerHTML = 'Hướng <b>' + q[2] + '</b> là hướng <b>' + CAT[c][0] + '</b> (' + (CAT[c][1] ? 'tốt' : 'xấu') + ') với gia chủ: ' + CAT[c][2].toLowerCase() + '.';
+      document.querySelectorAll('table.bt tr[data-q]').forEach(function (tr) { tr.classList.toggle('cur', +tr.getAttribute('data-q') === quaiAt(a)); });
+    } else { v.className = 'verdict none'; v.innerHTML = 'Nhập năm sinh ở mục <b>Hướng hợp tuổi</b> để biết hướng này tốt hay xấu với gia chủ.'; }
+  }
+  function setRose(a) { rose.setAttribute('transform', 'rotate(' + (-a) + ' ' + C + ' ' + C + ')'); }
+
+  /* ---------- Cảm biến ---------- */
+  var target = null, raf = 0, gotAbs = false, lastEvt = 0, mode = 'none';
+  function status(t, warn) { var s = $('status'); s.textContent = t; s.className = 'status' + (warn ? ' warn' : ''); }
+  function screenAngle() { return (screen.orientation && screen.orientation.angle) || window.orientation || 0; }
+  function onOri(e, abs) {
+    if (locked) return;
+    var h = null;
+    if (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading)) h = e.webkitCompassHeading;
+    else if (e.alpha != null && (abs || e.absolute)) h = 360 - e.alpha;
+    if (h == null) return;
+    if (abs) gotAbs = true; else if (gotAbs) return;
+    mode = 'sensor'; lastEvt = Date.now();
+    target = norm(h + screenAngle());
+    var tilt = Math.max(Math.abs(e.beta || 0), Math.abs(e.gamma || 0));
+    if (tilt > 30) status('Đặt điện thoại nằm ngang (mặt màn hình hướng lên trời) để đo chính xác.', true);
+    else status('Đang dùng cảm biến la bàn. Nếu số nhảy lung tung, lắc máy theo hình số 8 để hiệu chỉnh.');
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function tick() {
+    raf = 0;
+    if (target == null) return;
+    if (cur == null) cur = target;
+    var diff = ((target - cur + 540) % 360) - 180;
+    cur = norm(cur + diff * 0.18);
+    setRose(cur);
+    if (shown == null || Math.abs(((cur - shown + 540) % 360) - 180) > 0.3) { shown = cur; show(cur); }
+    if (Math.abs(diff) > 0.05) raf = requestAnimationFrame(tick);
+  }
+  function startSensor() {
+    var DOE = window.DeviceOrientationEvent;
+    if (!DOE) { noSensor(); return; }
+    var go = function () {
+      window.addEventListener('deviceorientationabsolute', function (e) { onOri(e, true); }, true);
+      window.addEventListener('deviceorientation', function (e) { onOri(e, false); }, true);
+      status('Đang khởi động cảm biến…');
+      setTimeout(function () { if (mode !== 'sensor') noSensor(); }, 2500);
+    };
+    if (typeof DOE.requestPermission === 'function') {
+      DOE.requestPermission().then(function (r) { if (r === 'granted') go(); else noSensor('Bạn chưa cho phép dùng cảm biến hướng.'); }).catch(function () { noSensor(); });
+    } else go();
+    $('start').style.display = 'none';
+  }
+  function noSensor(msg) {
+    if (mode === 'sensor') return;
+    mode = 'manual';
+    status((msg ? msg + ' ' : '') + 'Không đọc được cảm biến la bàn trên máy này. Bạn có thể kéo xoay mặt la bàn hoặc nhập số độ.', true);
+    if (cur == null) { cur = 0; setRose(0); show(0); }
+  }
+  $('start').onclick = startSensor;
+  $('lock').onclick = function () {
+    locked = !locked;
+    this.classList.toggle('on', locked); this.textContent = locked ? 'Mở khóa' : 'Khóa hướng';
+    if (locked && cur != null) status('Đã khóa ở ' + fmt(cur) + '. Bấm Mở khóa để đo tiếp.');
+  };
+  $('manual').onchange = function () {
+    var v = parseFloat(String(this.value).replace(',', '.'));
+    if (isNaN(v)) return;
+    locked = true; $('lock').classList.add('on'); $('lock').textContent = 'Mở khóa';
+    cur = shown = norm(v); target = null; setRose(cur); show(cur);
+    status('Đang xem theo số độ nhập tay: ' + fmt(cur) + '.');
+  };
+  // kéo xoay bằng tay
+  var drag = null;
+  function angOf(ev) { var r = $('dialbox').getBoundingClientRect(); return Math.atan2(ev.clientX - r.left - r.width / 2, -(ev.clientY - r.top - r.height / 2)) * 180 / Math.PI; }
+  $('dialbox').addEventListener('pointerdown', function (ev) {
+    if (mode === 'sensor' && !locked) return;
+    drag = { a: angOf(ev), c: cur || 0 }; this.setPointerCapture(ev.pointerId);
+  });
+  $('dialbox').addEventListener('pointermove', function (ev) {
+    if (!drag) return;
+    cur = shown = norm(drag.c - (angOf(ev) - drag.a)); target = null; setRose(cur); show(cur);
+  });
+  $('dialbox').addEventListener('pointerup', function () { drag = null; });
+
+  /* ---------- Khởi động ---------- */
+  drawRose();
+  try {
+    var sv = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (sv && sv.y) { $('pD').value = sv.d; $('pM').value = sv.m; $('pY').value = sv.y; $('pS').value = sv.s; $('pf').requestSubmit ? $('pf').requestSubmit() : $('pf').onsubmit(new Event('submit')); }
+  } catch (e) { }
+  var CAP = window.Capacitor, NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
+  if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission !== 'function') startSensor();
+  else status(NATIVE ? '' : 'Bấm “Bật la bàn” để dùng cảm biến của điện thoại.');
+  try { var th = localStorage.getItem('tv-theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch (e) { }
+})();
+</script>
+</body>
+</html>
