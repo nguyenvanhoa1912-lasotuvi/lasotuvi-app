@@ -210,9 +210,15 @@ footer li{margin:3px 0}
     });
     el('circle', { cx: C, cy: C, r: 92, fill: 'var(--dial2)', stroke: 'var(--gold)', 'stroke-width': 1 });
     // hướng
+    // 4 hướng chính: khung nền đỏ, chữ trắng đậm
+    [0, 2, 4, 6].forEach(function (i) {
+      el('path', { d: sector(62, 92, i * 45 - 22.5, i * 45 + 22.5), fill: '#b3261a', stroke: '#e3b65a', 'stroke-width': 1.2 });
+    });
+    el('circle', { cx: C, cy: C, r: 62, fill: 'none', stroke: 'var(--gold)', 'stroke-width': 1 });
     QUAI.forEach(function (q, i) {
       var g = el('g', { transform: 'rotate(' + i * 45 + ' ' + C + ' ' + C + ')' });
-      el('text', { x: C, y: 120, 'text-anchor': 'middle', 'font-size': i % 2 ? 9.5 : 12, 'font-weight': 700, fill: i === 0 ? 'var(--red)' : 'var(--muted)', 'font-family': 'Noto Serif' }, g, q[2]);
+      if (i % 2 === 0) el('text', { x: C, y: 128, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 900, fill: '#ffffff', 'letter-spacing': '.5', 'font-family': 'Noto Serif' }, g, q[2].toUpperCase());
+      else el('text', { x: C, y: 125, 'text-anchor': 'middle', 'font-size': 9.5, 'font-weight': 700, fill: 'var(--muted)', 'font-family': 'Noto Serif' }, g, q[2]);
     });
   }
 
