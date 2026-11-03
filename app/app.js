@@ -1,7 +1,7 @@
 /* =====================================================================
- * Lá Số Tử Vi – lớp App (Capacitor + AdMob)
+ * Lịch Tử Vi – lớp App (Capacitor + AdMob)
  * Được build-web.mjs chèn vào cuối mỗi trang HTML. Không sửa logic an sao.
- *  - Thanh điều hướng đáy: Lá số / Chư tinh / Kinh Dịch / Giới thiệu
+ *  - Mở app vào trang Lịch; thanh điều hướng đáy: Lịch / Lá số / Chư tinh / Kinh Dịch / La bàn / Giải mộng / Giới thiệu
  *  - Banner AdMob neo đáy màn hình
  *  - Rewarded: mở khóa "Đại vận" và "Tiểu vận"
  *  - Đồng ý quyền riêng tư (UMP – bắt buộc với người dùng EEA/UK)
@@ -15,6 +15,15 @@
   var NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
   var DEMO = !NATIVE && /[?&]appdemo=1/.test(location.search);
   if (!NATIVE && !DEMO) return;               // bản web thường: không làm gì
+
+  // Mở app: vào thẳng trang Lịch (chỉ lần đầu của mỗi phiên; bấm "Lá số" vẫn vào index.html)
+  var HOME = 'LichVanNien.html';
+  var CUR = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  try {
+    var started = sessionStorage.getItem('lstv-started') === '1';
+    sessionStorage.setItem('lstv-started', '1');
+    if (!started && CUR === 'index.html' && !location.hash) { location.replace(HOME + (DEMO ? '?appdemo=1' : '')); return; }
+  } catch (e) { }
 
   var CFG = window.LSTV_ADS || {};
   var TEST_BANNER = 'ca-app-pub-3940256099942544/9214589741';
@@ -43,10 +52,10 @@
 
   /* ---------- Thanh điều hướng đáy ---------- */
   var PAGES = [
+    { href: 'LichVanNien.html', han: '曆', vi: 'Lịch' },
     { href: 'index.html', han: '命', vi: 'Lá số' },
     { href: 'SaoTuVi.html', han: '星', vi: 'Chư tinh' },
     { href: 'KinhDich.html', han: '易', vi: 'Kinh Dịch' },
-    { href: 'LichVanNien.html', han: '曆', vi: 'Lịch' },
     { href: 'LaBan.html', han: '羅', vi: 'La bàn' },
     { href: 'GiaiMong.html', han: '夢', vi: 'Giải mộng' },
     { href: 'gioi-thieu.html', han: '序', vi: 'Giới thiệu' }
@@ -188,7 +197,7 @@
     if (!App) return;
     App.addListener('backButton', function () {
       var cur = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-      if (cur !== 'index.html') { location.href = 'index.html'; return; }
+      if (cur !== HOME.toLowerCase()) { location.href = HOME; return; }
       if (location.hash) { history.replaceState(null, '', location.pathname); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
       if (window.scrollY > 300) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
       App.exitApp();

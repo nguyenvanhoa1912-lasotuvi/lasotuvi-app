@@ -85,3 +85,8 @@ cd www && python3 -m http.server 8080
 - **Chỉ số theo dõi (AdMob + Play Console)**: DAU, số lá số lập/người, tỷ lệ bấm mở khóa (Rewarded opt-in), eCPM Banner/Rewarded, đánh giá trung bình, tỷ lệ crash.
 - **Đòn bẩy doanh thu theo thứ tự ưu tiên**: (1) tăng lượt lập lá số qua ASO (từ khóa: “lá số tử vi”, “xem tử vi”, “tử vi trọn đời”); (2) chuyển `unlockScope` sang `chart` khi lượng dùng ổn định; (3) thêm Rewarded cho *Lưu niên năm sau*; (4) gói “Xóa quảng cáo” (In-app purchase) ở phiên bản 2.
 - **Không** dùng Interstitial chen giữa thao tác lập lá số – rủi ro đánh giá thấp và vi phạm chính sách vị trí QC.
+
+## Đổi năm trên biểu tượng (mỗi năm)
+Biểu tượng "Lịch Tử Vi" có năm (vd. 2026). Trước 1/1 hằng năm: dựng lại các ảnh trong `resources/`
+từ `resources/icon-template.svg` (thay `{{YEAR}}`), chạy `npm run assets`, phát hành bản cập nhật
+và thay biểu tượng 512 + ảnh bìa trên Play Console.
